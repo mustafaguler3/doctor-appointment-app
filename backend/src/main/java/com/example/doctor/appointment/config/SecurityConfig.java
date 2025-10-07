@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final String[] publicUrl = {
             "/api/doctors/**",
             "/home",
-            "/api/images/**",
+            "/api/departments/**",
             "/images/**",
             "/verify",
             "/*.css",

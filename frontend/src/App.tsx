@@ -1,18 +1,20 @@
 
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Footer from "./pages/Footer";
-import Header from "./pages/Header";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/Home";
+import Layout from "./layout/Layout";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <div>
-      <Header />
-        <div>
-          <HomePage/>
-        </div>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<NotFound/>}/>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

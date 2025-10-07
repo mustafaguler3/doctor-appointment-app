@@ -1,19 +1,19 @@
-const Header = () => {
+const Navbar = () => {
   return (
     <>
       <nav className="navbar navbar-light bg-white shadow-sm">
         <div className="container">
-          <a className="navbar-brand" href="index.html">
+          <a className="navbar-brand" href="/">
             <i className="fas fa-stethoscope me-2"></i>DokApp
           </a>
           <div className="ms-auto">
             <a
-              href="patient-login.html"
+              href="/patient-login"
               className="btn btn-outline-primary me-2"
             >
               Patient Login
             </a>
-            <a href="doctor-login.html" className="btn btn-outline-success">
+            <a href="/doctor-login" className="btn btn-outline-success">
               Doctor Login
             </a>
           </div>
@@ -32,27 +32,27 @@ const Header = () => {
           <div className="collapse navbar-collapse" id="mainNavbar">
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
-                <a className="nav-link" href="index.html">
+                <a className="nav-link" href="/">
                   Home
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="doctors.html">
+                <a className="nav-link" href="/doctors">
                   Doctors
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="departments.html">
+                <a className="nav-link" href="/departments">
                   Departments
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="contact.html">
+                <a className="nav-link" href="/contact">
                   Contact
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="patient-appointment-new.html">
+                <a className="nav-link" href="patient-appointment-new">
                   Make Appointment
                 </a>
               </li>
@@ -64,4 +64,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Navbar;
