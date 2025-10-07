@@ -1,3 +1,4 @@
+import type { User } from "./User"
 
 export interface Doctor {
     id: number
@@ -5,6 +6,7 @@ export interface Doctor {
     doctorNo: string
     designation: string
     biography: string
+    user: User
     address: string
     city: string
     state: string

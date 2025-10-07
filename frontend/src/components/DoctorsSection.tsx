@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Doctor } from "../types/Doctor";
-import { DoctorService } from "../services/doctorService";
+import { DoctorService } from "../services/DoctorService";
 
 const DoctorsSection = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -38,7 +38,7 @@ const DoctorsSection = () => {
             <div className="doctor-card">
               <div className="doctor-image">
                 <a href="doctor-detail.html">
-                  <img src="dist/images/doctor-1.jpg" alt="" />
+                  <img src={`http://localhost:8080/images/doctor/`+doctor.user.imageUrl} alt="" />
                 </a>
               </div>
               <div className="p-3">
@@ -47,11 +47,11 @@ const DoctorsSection = () => {
                     href="doctor-detail.html"
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
-                    {doctor.id}
+                    {doctor.user.fullName}
                   </a>
                 </h5>
                 <p className="text-muted" style={{ marginBottom: 0 }}>
-                  {doctor.designation}
+                  {doctor.biography}
                 </p>
                 <p className="text-muted">MBBS, FCPS, FRCS</p>
               </div>

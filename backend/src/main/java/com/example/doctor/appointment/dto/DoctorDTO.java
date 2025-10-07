@@ -4,6 +4,7 @@ import com.example.doctor.appointment.entity.Appointment;
 import com.example.doctor.appointment.entity.Department;
 import com.example.doctor.appointment.entity.User;
 import com.example.doctor.appointment.enums.DoctorStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class DoctorDTO {
 
     private Long id;
     private Long userId;
+    private UserDTO user;
     private Long departmentId;
     private String doctorNo;
     private String designation; // prof, uzm
