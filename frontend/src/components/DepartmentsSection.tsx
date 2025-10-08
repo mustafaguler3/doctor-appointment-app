@@ -52,7 +52,7 @@ const DepartmentsSection = () => {
           ))}
         </div>
         <div className="text-center mt-4">
-          <a href="departments.html" className="btn btn-success btn-lg">
+          <a href="/departments" className="btn btn-success btn-lg">
             View All Departments <i className="fas fa-arrow-right"></i>
           </a>
         </div>

@@ -15,7 +15,10 @@ const SearchDoctorsPage = () => {
   useEffect(() => {
     const fetchDoctorsByQuery = async () => {
       try {
-        const response = await DoctorService.searchDoctors(city, departmentName);
+        const response = await DoctorService.searchDoctors(
+          city,
+          departmentName
+        );
         if (response.statusCode === 200) {
           setDoctors(response.data);
         } else {
@@ -26,18 +29,17 @@ const SearchDoctorsPage = () => {
       }
     };
     console.log("City:", city);
-console.log("Department:", departmentName);
+    console.log("Department:", departmentName);
 
     fetchDoctorsByQuery();
-  }, [city,departmentName]);
-
+  }, [city, departmentName]);
 
   if (error) {
-    return <NoResultsPage message={error}/>
+    return <NoResultsPage message={error} />;
   }
 
   if (doctors.length === 0) {
-    return <NoResultsPage message="No doctors avaible"/>
+    return <NoResultsPage message="No doctors avaible" />;
   }
 
   return (
@@ -67,7 +69,6 @@ console.log("Department:", departmentName);
                           id="doctor_name"
                           name="doctor_name"
                           placeholder="Enter doctor name"
-                          value="<?php echo isset($_GET['doctor_name']) ? htmlspecialchars($_GET['doctor_name']) : ''; ?>"
                         />
                       </div>
                       <div className="col-md-4">
@@ -116,29 +117,29 @@ console.log("Department:", departmentName);
         <div className="container">
           <div className="row">
             {doctors.map((doctor) => (
-                <div className="col-lg-3 col-md-6 mb-4">
-              <div className="doctor-card">
-                <div className="doctor-image">
-                  <a href="doctor-detail.html">
-                    <img src="dist/images/doctor-1.jpg" alt="" />
-                  </a>
-                </div>
-                <div className="p-3">
-                  <h5>
-                    <a
-                      href="doctor-detail.html"
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      {doctor.user.fullName}
+              <div className="col-lg-3 col-md-6 mb-4">
+                <div className="doctor-card">
+                  <div className="doctor-image">
+                    <a href="doctor-detail.html">
+                      <img src={`http://localhost:8080/images/doctor/`+doctor.user.imageUrl} alt="" />
                     </a>
-                  </h5>
-                  <p className="text-muted" style={{ marginBottom: "0" }}>
-                    {doctor.biography}
-                  </p>
-                  <p className="text-muted">{doctor.designation}</p>
+                  </div>
+                  <div className="p-3">
+                    <h5>
+                      <a
+                        href="doctor-detail.html"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        {doctor.user.fullName}
+                      </a>
+                    </h5>
+                    <p className="text-muted" style={{ marginBottom: "0" }}>
+                      {doctor.biography}
+                    </p>
+                    <p className="text-muted">{doctor.designation}</p>
+                  </div>
                 </div>
               </div>
-            </div>
             ))}
           </div>
         </div>

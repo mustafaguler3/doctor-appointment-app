@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Doctor } from "../types/Doctor";
 import { DoctorService } from "../services/DoctorService";
+import NoResultsPage from "../pages/NoResults";
 
 const DoctorsSection = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -25,7 +26,7 @@ const DoctorsSection = () => {
   },[]);
 
   if (error) {
-    return <h1 className="alert alert-danger">{error}</h1>;
+    return <NoResultsPage message={error}/>;
   }
 
   return (
@@ -60,7 +61,7 @@ const DoctorsSection = () => {
           ))}
         </div>
         <div className="text-center mt-4">
-          <a href="doctors.html" className="btn btn-success btn-lg">
+          <a href="/doctors" className="btn btn-success btn-lg">
             View All Doctors <i className="fas fa-arrow-right"></i>
           </a>
         </div>
