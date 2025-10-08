@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { Doctor } from "../../types/Doctor";
 import { DoctorService } from "../../services/DoctorService";
-import NoResults from "../../pages/NoResults";
+import NoResultsPage from "../../pages/NoResults";
 
 const SearchDoctorsPage = () => {
   const [searchParam] = useSearchParams();
@@ -33,11 +33,11 @@ console.log("Department:", departmentName);
 
 
   if (error) {
-    return <NoResults message={error}/>
+    return <NoResultsPage message={error}/>
   }
 
   if (doctors.length === 0) {
-    return <NoResults message="No doctors avaible"/>
+    return <NoResultsPage message="No doctors avaible"/>
   }
 
   return (
