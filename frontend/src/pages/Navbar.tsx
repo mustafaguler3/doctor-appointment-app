@@ -4,13 +4,10 @@ const Navbar = () => {
       <nav className="navbar navbar-light bg-white shadow-sm">
         <div className="container">
           <a className="navbar-brand" href="/">
-            <i className="fas fa-stethoscope me-2"></i>DokApp
+            <i className="fas fa-stethoscope me-2"></i>HealthPro
           </a>
           <div className="ms-auto">
-            <a
-              href="/patient-login"
-              className="btn btn-outline-primary me-2"
-            >
+            <a href="/patient-login" className="btn btn-outline-primary me-2">
               Patient Login
             </a>
             <a href="/doctor-login" className="btn btn-outline-success">

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,5 +18,11 @@ public class DoctorController {
     @GetMapping
     public ResponseEntity<?> findDoctors(){
         return ResponseEntity.ok(doctorService.getDoctors());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> findDoctorsByQueries(@RequestParam(required = false) String city,
+                                                  @RequestParam(required = false) String departmentName) {
+        return ResponseEntity.ok(doctorService.getDoctorsByCityAndDepartment(city,departmentName));
     }
 }
