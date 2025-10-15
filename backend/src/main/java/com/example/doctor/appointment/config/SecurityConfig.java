@@ -1,5 +1,8 @@
 package com.example.doctor.appointment.config;
 
+import com.example.doctor.appointment.service.JwtService;
+import com.example.doctor.appointment.util.JwtAuthenticationFilter;
+import com.example.doctor.appointment.util.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +25,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    //private final AuthFilter authFilter;
-    //private final CustomAccessDeniedHandler accessDeniedHandler;
-    //private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtService jwtService;
+    private final JwtAuthenticationFilter authenticationFilter;
 
     private final String[] publicUrl = {
             "/api/doctors/**",
-            "/home",
+            "/api/auth/**",
             "/api/contact/**",
             "/api/departments/**",
             "/images/**",
@@ -50,14 +52,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 //.exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(req -> req.requestMatchers(publicUrl)
                         .permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(mag -> mag.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                //.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(mag -> mag.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

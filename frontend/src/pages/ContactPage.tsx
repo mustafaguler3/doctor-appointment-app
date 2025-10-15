@@ -182,7 +182,7 @@ const ContactPage = () => {
                       <strong>Address</strong>
                       <p>
                         123 Medical Center Drive Healthcare City, HC 12345
-                        United States
+                        Türkiye
                       </p>
                     </div>
                   </div>
@@ -190,14 +190,14 @@ const ContactPage = () => {
                     <i className="fas fa-phone"></i>
                     <div>
                       <strong>Phone</strong>
-                      <p>+1 (555) 123-4567</p>
+                      <p>+1 (555) ***-****</p>
                     </div>
                   </div>
                   <div className="contact-info-item">
                     <i className="fas fa-ambulance"></i>
                     <div>
                       <strong>Emergency</strong>
-                      <p>+1 (555) 911-0000</p>
+                      <p>+1 (555) 153-0000</p>
                     </div>
                   </div>
                   <div className="contact-info-item">

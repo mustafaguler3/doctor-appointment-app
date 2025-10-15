@@ -25,13 +25,13 @@ const Footer = () => {
               <h5>Contact Info</h5>
               <p>
                 <i className="fas fa-map-marker-alt me-2"></i>123 Medical
-                Street, USA
+                Street, TR
               </p>
               <p>
                 <i className="fas fa-phone me-2"></i>+1 (555) 123-4567
               </p>
               <p>
-                <i className="fas fa-envelope me-2"></i>info@dokapp.com
+                <i className="fas fa-envelope me-2"></i>info@healthpro.com
               </p>
             </div>
             <div className="col-lg-4 col-md-6 mb-4">
@@ -70,7 +70,7 @@ const Footer = () => {
       <div className="copyright">
         <div className="container">
           <p className="mb-0">
-            Copyright &copy; 2025, DokApp. All Rights Reserved.
+            Copyright &copy; 2025, healthpro. All Rights Reserved.
           </p>
         </div>
       </div>

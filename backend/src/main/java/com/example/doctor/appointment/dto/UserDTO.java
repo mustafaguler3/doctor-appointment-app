@@ -23,7 +23,8 @@ public class UserDTO {
     private String phone;
     private Role role;
     private boolean status = true;
-    private Patient patient;
+    @JsonBackReference
+    private PatientDTO patient;
     @JsonBackReference
     private DoctorDTO doctor;
 }

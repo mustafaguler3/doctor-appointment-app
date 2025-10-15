@@ -8,13 +8,15 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use((config:any) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (token) {
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${token}`
     }
     return config;
 })
+
+
 
 // Response interceptor (error handling)
 axiosClient.interceptors.response.use(

@@ -1,4 +1,12 @@
+import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+
 const Navbar = () => {
+  const { user, logout } = useAuth();
+
+  useEffect(() => {
+  },[user,logout])
+  
   return (
     <>
       <nav className="navbar navbar-light bg-white shadow-sm">
@@ -6,14 +14,38 @@ const Navbar = () => {
           <a className="navbar-brand" href="/">
             <i className="fas fa-stethoscope me-2"></i>HealthPro
           </a>
-          <div className="ms-auto">
-            <a href="/patient-login" className="btn btn-outline-primary me-2">
-              Patient Login
-            </a>
-            <a href="/doctor-login" className="btn btn-outline-success">
-              Doctor Login
-            </a>
-          </div>
+          {!user ? (
+            <div className="ms-auto">
+              <a href="/patient-login" className="btn btn-outline-primary me-2">
+                Patient Login
+              </a>
+              <a href="/doctor-login" className="btn btn-outline-success">
+                Doctor Login
+              </a>
+            </div>
+          ) : (
+            <div className="dropdown">
+              <button
+                className="btn btn-outline-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+              >
+                {user.email || "Profile"}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a className="dropdown-item" href="/patient/dashboard">
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <button className="dropdown-item" onClick={logout}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </nav>
       <nav className="navbar navbar-expand-lg main-nav">
