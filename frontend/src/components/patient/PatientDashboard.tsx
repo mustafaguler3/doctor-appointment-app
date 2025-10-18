@@ -1,11 +1,11 @@
 import { useAuth } from "../../hooks/useAuth";
 
 const PatientDashboard = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
     return (
         <>
             <div className="profile-header mb-4">
-                <h2>Welcome back, {user?.fullName}!</h2>
+                <h2>Welcome back, {user?.fullName}</h2>
               </div>
               <div className="row mb-4">
                 <div className="col-lg-6 col-md-6 mb-3">

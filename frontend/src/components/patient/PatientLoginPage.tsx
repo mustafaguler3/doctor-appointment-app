@@ -3,6 +3,8 @@ import AuthService from "../../services/AuthService";
 import { useState } from "react";
 import ErrorPage from "../../pages/ErrorPage";
 import { useAuth } from "../../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
+import type { CustomJwtPayload } from "../../types/CustomeJwtPayload";
 
 const PatientLoginPage = () => {
   const navigate = useNavigate();
@@ -22,11 +24,19 @@ const PatientLoginPage = () => {
     e.preventDefault();
     try {
       const response = await AuthService.login(loginData);
-      const { accessToken, refreshToken } = response;
+      const { accessToken, refreshToken } = response.data.data;
+      const decoded = jwtDecode<CustomJwtPayload>(accessToken);
+      console.log("Decoded : ", decoded);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setLoginData(response);
-      setUser(response);
+      setUser({
+        email: decoded.email,
+        role: decoded.role,
+        id: decoded.id,
+        username: decoded.sub,
+        fullName: decoded.fullName,
+      });
       navigate("/patient/dashboard");
     } catch (err) {
       setError(err?.message);

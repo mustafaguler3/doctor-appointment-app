@@ -4,9 +4,8 @@ import { useAuth } from "../hooks/useAuth";
 const Navbar = () => {
   const { user, logout } = useAuth();
 
-  useEffect(() => {
-  },[user,logout])
-  
+  useEffect(() => {}, [user, logout]);
+
   return (
     <>
       <nav className="navbar navbar-light bg-white shadow-sm">
@@ -30,7 +29,7 @@ const Navbar = () => {
                 type="button"
                 data-bs-toggle="dropdown"
               >
-                {user.email || "Profile"}
+                {user?.email || "Profile"}
               </button>
               <ul className="dropdown-menu dropdown-menu-end">
                 <li>

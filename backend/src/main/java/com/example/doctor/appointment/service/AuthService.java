@@ -12,8 +12,8 @@ import com.example.doctor.appointment.entity.User;
 import org.springframework.security.core.Authentication;
 
 public interface AuthService {
-    AuthResponse login(LoginRequestDTO request);
+    ResponseDTO<AuthResponse> login(LoginRequestDTO request);
     ResponseDTO<?> register(RegisterRequestDTO request);
-    AuthResponse refreshToken(RefreshTokenDTO request);
+    ResponseDTO<AuthResponse> refreshToken(RefreshTokenDTO request);
     ResponseDTO<UserDTO> getUserProfile(Authentication authentication);
 }

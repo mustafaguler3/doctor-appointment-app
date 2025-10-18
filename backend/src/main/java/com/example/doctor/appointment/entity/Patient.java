@@ -25,6 +25,8 @@ public class Patient {
     private String patientNo;
     private String insuranceNumber;
     private String bloodGroup;
+    private String address;
+    private String city;
     private String gender;
     private String state;
     private String zip;

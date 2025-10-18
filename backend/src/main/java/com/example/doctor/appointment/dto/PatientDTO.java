@@ -5,15 +5,32 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
 public class PatientDTO {
+
     private Long id;
-    @JsonManagedReference
+    @NotNull(message = "User cannot be null")
+    @Valid
     private UserDTO user;
+    @NotBlank(message = "Address cannot be empty")
+    private String address;
+    @NotBlank(message = "City cannot be empty")
+    private String city;
+    @Size(max = 20, message = "PatientNo cannot be longer than 20 characters")
     private String patientNo;
+    @Size(max = 50)
     private String insuranceNumber;
+    @NotBlank(message = "Blood group cannot be empty")
     private String bloodGroup;
+    @NotBlank(message = "Gender cannot be empty")
     private String gender;
+    @NotBlank(message = "State cannot be empty")
     private String state;
+    @NotBlank(message = "Zip cannot be empty")
     private String zip;
 }

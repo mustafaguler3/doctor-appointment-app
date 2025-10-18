@@ -9,4 +9,6 @@ export interface Patient {
     gender: string
     state: string
     zip: string
+    city: string
+    address: string
 }

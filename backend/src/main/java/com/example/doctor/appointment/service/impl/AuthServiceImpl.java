@@ -22,6 +22,7 @@ import com.example.doctor.appointment.util.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
     private final DoctorRepository doctorRepository;
 
     @Override
-    public AuthResponse login(LoginRequestDTO request) {
+    public ResponseDTO<AuthResponse> login(LoginRequestDTO request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword())
         );
@@ -56,7 +57,11 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateToken(userDetails);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
         
-        return new AuthResponse(token,refreshToken.getToken(),"Bearer");
+        return ResponseDTO.<AuthResponse>builder()
+                .message("Login successfully")
+                .statusCode(HttpStatus.OK.value())
+                .data(new AuthResponse(token,refreshToken.getToken()))
+                .build();
     }
 
     @Transactional
@@ -115,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse refreshToken(RefreshTokenDTO request) {
+    public ResponseDTO<AuthResponse> refreshToken(RefreshTokenDTO request) {
         String requestToken = request.getRefreshToken();
         RefreshToken refreshToken = refreshTokenService.validateRefreshToken(requestToken);
         User user = refreshToken.getUser();
@@ -123,7 +128,10 @@ public class AuthServiceImpl implements AuthService {
 
         String newToken = jwtService.generateToken(userDetails);
 
-        return new AuthResponse(newToken,requestToken,"Bearer");
+        return ResponseDTO.<AuthResponse>builder()
+                .message("Refreshed token successfully")
+                .data(new AuthResponse(newToken,requestToken))
+                .build();
     }
 
     @Override

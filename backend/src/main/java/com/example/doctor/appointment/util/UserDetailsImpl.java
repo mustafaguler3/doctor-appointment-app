@@ -1,6 +1,7 @@
 package com.example.doctor.appointment.util;
 
 import com.example.doctor.appointment.entity.User;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
+@Data
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
