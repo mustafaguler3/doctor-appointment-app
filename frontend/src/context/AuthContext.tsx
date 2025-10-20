@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { type User } from "../types/User";
-//import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import type { CustomJwtPayload } from "../types/CustomeJwtPayload";
 
@@ -15,7 +14,6 @@ export const AuthContext = createContext<AuthContextType>(undefined);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<Partial<User> | null>(null);
-  //const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -27,10 +25,9 @@ export const AuthProvider = ({ children }) => {
             email: decoded.email,
             fullName: decoded.fullName,
             role: decoded.role,
-            status: decoded.status
+            status: decoded.status,
+            imageUrl: decoded.imageUrl
           })
-          //const response = await AuthService.getCurrentUser();
-          //setUser(response.data.data);
         }
       } catch (error) {
         console.error(error);
@@ -43,7 +40,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
-    //navigate("/patient-login")
     window.location.href = "/patient-login"
   };
 

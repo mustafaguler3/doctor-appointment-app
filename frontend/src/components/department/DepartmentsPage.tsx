@@ -11,8 +11,8 @@ const DepartmentsPage = () => {
     const fetchDepartments = async () => {
         try {
             const response = await DepartmentService.findAllDepartments();
-            if (response.statusCode === 200) {
-                setDepartments(response.data)
+            if (response.data.statusCode === 200) {
+                setDepartments(response.data.data)
             }else {
                 setError(response.message)
             }

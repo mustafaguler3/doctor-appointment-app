@@ -6,4 +6,5 @@ export interface CustomJwtPayload extends JwtPayload {
   fullName: string
   id: number
   status: boolean
+  imageUrl: string
 }

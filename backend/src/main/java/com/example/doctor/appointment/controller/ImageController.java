@@ -24,7 +24,6 @@ public class ImageController {
             @PathVariable String type,
             @RequestParam("file") MultipartFile file) throws IOException {
 
-        // Örn: uploads/doctor/
         Path typeDir = root.resolve(type);
         if (!Files.exists(typeDir)) {
             Files.createDirectories(typeDir);
@@ -35,7 +34,6 @@ public class ImageController {
 
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // URL olarak döndür
         String fileUrl = "/images/" + type + "/" + filename;
         return ResponseEntity.ok(fileUrl);
     }

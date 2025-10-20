@@ -11,8 +11,8 @@ const DoctorsPage = () => {
     const fetchDoctors = async () => {
       try {
         const response = await DoctorService.getDoctors();
-        if (response.statusCode === 200) {
-          setDoctors(response.data);
+        if (response.data.statusCode === 200) {
+          setDoctors(response.data.data);
         } else {
           setError(response?.message);
         }

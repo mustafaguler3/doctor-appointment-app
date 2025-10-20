@@ -4,6 +4,7 @@ import com.example.doctor.appointment.entity.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -33,4 +34,5 @@ public class PatientDTO {
     private String state;
     @NotBlank(message = "Zip cannot be empty")
     private String zip;
+    private MultipartFile imageFile;
 }

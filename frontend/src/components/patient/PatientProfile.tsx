@@ -8,9 +8,12 @@ import { useNavigate } from "react-router-dom";
 const PatientProfile = () => {
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
+  const [file, setFile] = useState<File | null>(null);
 
-  const { user } = useAuth();
+  const { user,setUser } = useAuth();
   const navigate = useNavigate();
+
+  const formData = new FormData();
   const [form, setForm] = useState({
     gender: "",
     zip: "",
@@ -18,13 +21,17 @@ const PatientProfile = () => {
     address: "",
     city: "",
     bloodGroup: "",
+    imageFile: "",
     user: {
       fullName: "",
       phone: "",
       email: "",
       username: "",
+      imageUrl: "",
     },
   });
+
+  
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
@@ -62,25 +69,34 @@ const PatientProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Hasta bilgilerini tek tek ekle
+  formData.append("gender", form.gender);
+  formData.append("zip", form.zip);
+  formData.append("state", form.state);
+  formData.append("address", form.address);
+  formData.append("city", form.city);
+  formData.append("bloodGroup", form.bloodGroup);
+
+  // User bilgilerini ekle (nested object için field name kullanıyoruz)
+  formData.append("user.fullName", form.user.fullName);
+  formData.append("user.phone", form.user.phone);
+  formData.append("user.username", form.user.username);
+  formData.append("user.email", form.user.email);
+  formData.append("user.imageUrl", form.user.imageUrl);
+  // Dosya varsa ekle
+  if (file) {
+    formData.append("imageFile", file);
+  }
     try {
-      const response = await patientService.update(form);
+      const response = await patientService.update(formData);
       if (response.data.statusCode === 200) {
+        console.log("Response :", response.data)
+        setUser({
+          ...user,
+          imageUrl: response.data.user?.imageUrl 
+        })
         toast.success("Updated successfully");
         navigate("/patient/profile");
-        setForm({
-          gender: "",
-          zip: "",
-          state: "",
-          address: "",
-          city: "",
-          bloodGroup: "",
-          user: {
-            fullName: "",
-            phone: "",
-            email: "",
-            username: "",
-          },
-        });
         setErrors({});
       }
     } catch (err) {
@@ -107,7 +123,7 @@ const PatientProfile = () => {
         <div className="col-lg-12">
           <div className="dashboard-card">
             <div className="card-body">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="row">
                   <div className="col-md-12 mb-3">
                     <label htmlFor="firstName" className="form-label">
@@ -163,6 +179,23 @@ const PatientProfile = () => {
                       {errors["user.email"]}
                     </div>
                   </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="imageFile" className="form-label">
+                      Profile Image
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="imageFile"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setFile(e.target.files[0]);
+                        }
+                      }}
+                    />
+                  </div>
+
                   <div className="col-md-6 mb-3">
                     <label htmlFor="phone" className="form-label">
                       Phone Number *

@@ -11,8 +11,8 @@ const DepartmentsSection = () => {
       try {
         const response = await DepartmentService.findAllDepartments();
 
-        if (response.statusCode === 200) {
-          setDepartments(response.data);
+        if (response.data.statusCode === 200) {
+          setDepartments(response.data.data);
         }
       } catch (err) {
         setError(err?.message);

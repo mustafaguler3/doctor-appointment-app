@@ -5,8 +5,10 @@ import com.example.doctor.appointment.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
@@ -18,7 +20,8 @@ public class PatientController {
 
     @PostMapping("/update")
     public ResponseEntity<?> update(Principal principal,
-                                    @Valid @RequestBody PatientDTO patientDTO) {
+                                    @Valid @ModelAttribute PatientDTO patientDTO) throws IOException {
+
         return ResponseEntity.ok(patientService.update(principal,patientDTO));
     }
 }

@@ -7,6 +7,7 @@ import com.example.doctor.appointment.entity.Patient;
 import com.example.doctor.appointment.entity.User;
 import com.example.doctor.appointment.repository.PatientRepository;
 import com.example.doctor.appointment.repository.UserRepository;
+import com.example.doctor.appointment.service.FileStorageService;
 import com.example.doctor.appointment.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Service
@@ -25,18 +28,24 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final FileStorageService fileStorageService;
 
     @Override
-    public ResponseDTO<?> update(Principal principal, PatientDTO patientDTO) {
+    public ResponseDTO<?> update(Principal principal, PatientDTO patientDTO) throws IOException {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Patient patient = patientRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        user.setFullName(patientDTO.getUser().getFullName());
-        user.setPhone(patientDTO.getUser().getPhone());
-        user.setUsername(patientDTO.getUser().getUsername());
+        if (patientDTO.getUser() != null && patientDTO.getImageFile() != null && !patientDTO.getImageFile().isEmpty()) {
+            String fileUrl = fileStorageService.storeFile(patientDTO.getImageFile(), "patient");
+            //patientDTO.getUser().setImageUrl(fileUrl);
+            user.setImageUrl(fileUrl);
+            user.setFullName(patientDTO.getUser().getFullName());
+            user.setPhone(patientDTO.getUser().getPhone());
+            user.setUsername(patientDTO.getUser().getUsername());
+        }
 
         patient.setBloodGroup(patientDTO.getBloodGroup());
         patient.setPatientNo(patientDTO.getPatientNo());
@@ -48,9 +57,7 @@ public class PatientServiceImpl implements PatientService {
         patient.setUser(user);
         user.setPatient(patient);
 
-        User savedUser = userRepository.save(user);
         patientRepository.save(patient);
-        UserDTO userDto = modelMapper.map(savedUser, UserDTO.class);
         PatientDTO dto = modelMapper.map(patient,PatientDTO.class);
 
         return ResponseDTO.builder()
