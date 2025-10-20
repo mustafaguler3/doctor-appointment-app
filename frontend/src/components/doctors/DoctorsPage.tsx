@@ -46,10 +46,10 @@ const DoctorsPage = () => {
               <div className="col-lg-3 col-md-6 mb-4">
                 <div className="doctor-card">
                   <div className="doctor-image">
-                    <a href="doctor-detail.html">
+                    <a href={`/doctors/${doctor.id}`}>
                       <img
                         src={
-                          `http://localhost:8080/images/doctor/` +
+                          `http://localhost:8080` +
                           doctor.user.imageUrl
                         }
                         alt=""

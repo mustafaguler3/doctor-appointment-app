@@ -15,6 +15,7 @@ import PatientDashboard from "./components/patient/PatientDashboard";
 import PatientProfile from "./components/patient/PatientProfile";
 import PatientLayout from "./components/patient/PatientLayout";
 import { AuthProvider } from "./context/AuthContext";
+import DoctorDetailPage from "./components/doctors/DoctorDetailPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/departments" element={<DepartmentsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/doctors" element={<DoctorsPage />} />
+            <Route path="/doctors/:id" element={<DoctorDetailPage/>}/>
             <Route
               path="*"
               element={<ErrorPage message="This page doesn’t exist." />}

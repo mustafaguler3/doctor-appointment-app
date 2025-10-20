@@ -14,4 +14,10 @@ export interface Doctor {
     fee: string
     signature: string
     status: unknown
+
+    schedules: string[]
+    country: string
+    specialization: string[]
+    experience: any
+    reviews: any[]
 }

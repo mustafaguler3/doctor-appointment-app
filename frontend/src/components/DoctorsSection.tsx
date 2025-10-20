@@ -37,8 +37,8 @@ const DoctorsSection = () => {
             <div className="col-lg-3 col-md-6">
             <div className="doctor-card">
               <div className="doctor-image">
-                <a href="doctor-detail.html">
-                  <img src={`http://localhost:8080/images/doctor/`+doctor.user.imageUrl} alt="" />
+                <a href={`/doctors/${doctor.id}`}>
+                  <img src={`http://localhost:8080`+doctor.user.imageUrl} alt="" />
                 </a>
               </div>
               <div className="p-3">

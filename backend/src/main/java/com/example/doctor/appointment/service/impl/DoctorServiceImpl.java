@@ -20,6 +20,17 @@ public class DoctorServiceImpl implements DoctorService {
     private final ModelMapper modelMapper;
 
     @Override
+    public ResponseDTO<DoctorDTO> getDoctorById(Long doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        return ResponseDTO.<DoctorDTO>builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(modelMapper.map(doctor,DoctorDTO.class))
+                .build();
+    }
+
+    @Override
     public ResponseDTO<List<DoctorDTO>> getDoctors() {
         List<Doctor> doctors = doctorRepository.findAll();
 
