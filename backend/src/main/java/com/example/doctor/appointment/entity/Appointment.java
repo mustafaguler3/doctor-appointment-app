@@ -3,13 +3,19 @@ package com.example.doctor.appointment.entity;
 import com.example.doctor.appointment.enums.AppointmentStatus;
 import com.example.doctor.appointment.enums.PaymentMethod;
 import com.example.doctor.appointment.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "appointments")
@@ -17,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Appointment {
 
     @Id
@@ -28,16 +35,46 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
-    private LocalDateTime appointmentDate;
     @Enumerated(EnumType.STRING)
-    private AppointmentStatus status; // PENDING, CONFIRMED, CANCELLED, COMPLETED
+    private AppointmentStatus status;
     @Column(columnDefinition = "TEXT")
     private String notes;
-    
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate appointmentDate;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime appointmentTime;
+
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        if (status == null) status = AppointmentStatus.SCHEDULED;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public LocalTime getTime() {
+        return appointmentTime;
+    }
 }
 
 

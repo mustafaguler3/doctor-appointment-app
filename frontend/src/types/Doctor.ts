@@ -1,9 +1,12 @@
+import type { Department } from "./Department"
+import type { Schedule } from "./Schedule"
 import type { User } from "./User"
 
 export interface Doctor {
     id: number
     departmentId: number
     doctorNo: string
+    department: Department
     designation: string
     biography: string
     user: User
@@ -15,7 +18,7 @@ export interface Doctor {
     signature: string
     status: unknown
 
-    schedules: string[]
+    schedules: Schedule[]
     country: string
     specialization: string[]
     experience: any

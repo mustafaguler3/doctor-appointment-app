@@ -16,6 +16,7 @@ import PatientProfile from "./components/patient/PatientProfile";
 import PatientLayout from "./components/patient/PatientLayout";
 import { AuthProvider } from "./context/AuthContext";
 import DoctorDetailPage from "./components/doctors/DoctorDetailPage";
+import PatientAppointments from "./components/patient/PatientAppointments";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path="/patient" element={<PatientLayout />}>
               <Route index path="dashboard" element={<PatientDashboard />} />
               <Route path="profile" element={<PatientProfile />} />
+              <Route path="appointments" element={<PatientAppointments/>}/> 
             </Route>
           </Route>
         </Routes>

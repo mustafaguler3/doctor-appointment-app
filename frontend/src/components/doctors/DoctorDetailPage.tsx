@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { DoctorService } from "../../services/DoctorService";
 import type { Doctor } from "../../types/Doctor";
 import ErrorPage from "../../pages/ErrorPage";
+import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import DoctorSchedule from "./DoctorSchedule";
 
 const DoctorDetailPage = () => {
   const { id } = useParams();
@@ -106,100 +109,33 @@ const DoctorDetailPage = () => {
             </div>
 
             {/* Appointment Booking */}
+
             <div className="col-lg-4 col-md-6">
-              <div className="card h-100 shadow-sm">
-                <div className="card-header bg-success text-white">
-                  <h5 className="mb-0">
-                    <i className="fas fa-calendar-alt me-2"></i>Book Appointment
-                  </h5>
-                </div>
-                <div className="card-body">
-                  <form>
-                    <div className="mb-3">
-                      <label className="form-label">Select Date</label>
-                      <input type="date" className="form-control" required />
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Select Time</label>
-                      <select className="form-select">
-                        <option>10:00 AM - 11:00 AM</option>
-                        <option>01:00 PM - 02:00 PM</option>
-                        <option>04:00 PM - 05:00 PM</option>
-                      </select>
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Payment Method</label>
-                      <select className="form-select">
-                        <option>Credit Card</option>
-                        <option>Stripe</option>
-                        <option>PayPal</option>
-                      </select>
-                    </div>
-                    <button className="btn btn-success w-100">
-                      Confirm Appointment
-                    </button>
-                  </form>
-                </div>
-              </div>
+              <Card sx={{ height: "100%", boxShadow: 3, borderRadius: 3 }}>
+                <CardHeader
+                  title={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CalendarMonthIcon />
+                      <Typography variant="h6" fontWeight="bold">
+                        Book Appointment
+                      </Typography>
+                    </Box>
+                  }
+                  sx={{
+                    backgroundColor: "success.main",
+                    color: "white",
+                    borderTopLeftRadius: 12,
+                    borderTopRightRadius: 12,
+                    py: 1,
+                  }}
+                />
+
+                <CardContent>
+                  <DoctorSchedule doctor={doctor}  />
+                </CardContent>
+              </Card>
             </div>
           </div>
-
-          {/* Schedule Section */}
-          <div className="mt-5">
-            <div className="card shadow-sm">
-              <div className="card-header bg-info text-white">
-                <h4 className="mb-0">
-                  <i className="fas fa-clock me-2"></i>Available Schedule
-                </h4>
-              </div>
-              <div className="card-body">
-                {doctor.schedules && doctor.schedules.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table table-bordered table-sm">
-                      <thead className="table-light">
-                        <tr>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Max Patients</th>
-                          <th>Booked</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {/* 
-                     
-                     {doctor.schedules.map((schedule) => ( 
-                          <tr key={schedule.id}>
-                            <td>{schedule.date}</td>
-                            <td>{schedule.timeSlot}</td>
-                            <td>{schedule.maxPatients}</td>
-                            <td>{schedule.booked}</td>
-                            <td>
-                              <span
-                                className={`badge ${
-                                  schedule.booked >= schedule.maxPatients
-                                    ? "bg-danger"
-                                    : "bg-success"
-                                }`}
-                              >
-                                {schedule.booked >= schedule.maxPatients
-                                  ? "Full"
-                                  : "Available"}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                     */}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No schedules available</p>
-                )}
-              </div>
-            </div>
-          </div>
-
           {/* Reviews Section */}
           <div className="mt-5">
             <div className="card shadow-sm">

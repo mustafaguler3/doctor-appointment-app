@@ -26,9 +26,10 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-
+    @OneToMany(mappedBy = "doctor",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Schedule> schedules;
     private String doctorNo;
-    private String designation; // prof, uzm
+    private String designation;
     private String biography;
     private String address;
     private String city;
@@ -37,7 +38,7 @@ public class Doctor {
     private Double fee;
     private String signature;
     @Enumerated(EnumType.STRING)
-    private DoctorStatus status; // active
+    private DoctorStatus status;
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
 }

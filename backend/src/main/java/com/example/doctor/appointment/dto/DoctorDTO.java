@@ -6,6 +6,7 @@ import com.example.doctor.appointment.entity.User;
 import com.example.doctor.appointment.enums.DoctorStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,13 +15,14 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DoctorDTO {
-
     private Long id;
     private Long userId;
     private UserDTO user;
     private Long departmentId;
+    @JsonManagedReference
+    private DepartmentDTO department;
     private String doctorNo;
-    private String designation; // prof, uzm
+    private String designation;
     private String biography;
     private String address;
     private String city;
@@ -28,7 +30,9 @@ public class DoctorDTO {
     private String zip;
     private Double fee;
     private String signature;
-    private DoctorStatus status; // active
+    private List<ScheduleDTO> schedules;
+    private DoctorStatus status;
+    @JsonIgnore
     private List<Appointment> appointments;
 
 }
