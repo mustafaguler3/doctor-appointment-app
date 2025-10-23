@@ -19,6 +19,11 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.createAppointment(request));
     }
 
+    @GetMapping("/{appointmentId}")
+    public ResponseEntity<?> getAppointment(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<?> findPatientAppointments() {
         return ResponseEntity.ok(appointmentService.findPatientAppointments());

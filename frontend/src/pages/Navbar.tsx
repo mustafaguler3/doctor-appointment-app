@@ -3,9 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-
   useEffect(() => {}, [user, logout]);
-
   return (
     <>
       <nav className="navbar navbar-light bg-white shadow-sm">

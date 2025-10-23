@@ -10,4 +10,5 @@ import java.util.List;
 public interface AppointmentService {
     ResponseDTO<AppointmentDTO> createAppointment(AppointmentDTO request);
     ResponseDTO<List<AppointmentDTO>> findPatientAppointments();
+    ResponseDTO<AppointmentDTO> getAppointment(Long appointmentId);
 }

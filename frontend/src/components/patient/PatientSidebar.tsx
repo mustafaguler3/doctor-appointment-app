@@ -1,9 +1,11 @@
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useEffect } from "react";
 
 const PatientSidebar = () => {
-  const { user } = useAuth();
+  const { user,logout } = useAuth();
   const location = useLocation();
+  useEffect(() => {},[user])
   return (
     <div className="col-lg-3 mb-4">
       <div className="dashboard-sidebar">
@@ -52,9 +54,9 @@ const PatientSidebar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className={location.pathname.includes("/patient-login") ? "nav-link active" : "nav-link"}  href="/patient-login">
+              <button className={location.pathname.includes("/patient-login") ? "nav-link active" : "nav-link"}  onClick={logout}>
                 <i className="fas fa-sign-out-alt"></i> Logout
-              </a>
+              </button>
             </li>
           </ul>
         </nav>

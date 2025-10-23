@@ -12,35 +12,26 @@ declare global {
 
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [error, setError] = useState();
 
   useEffect(() => {
     const fetchAppointments = async () => {
-        try {
-            const response = await AppointmentService.getPatientAppointments()
-            console.log(response.data)
-            if (response.data.statusCode === 200) {
-                setAppointments(response.data.data)
-            }else {
-                setError(response.data.message)
-            }
-        }catch(err) {
-            console.log(err?.message)
-            setError(err?.response.message)
+      try {
+        const response = await AppointmentService.getPatientAppointments();
+        console.log(response.data);
+        if (response.data.statusCode === 200) {
+          setAppointments(response.data.data);
+        } else {
+          setError(response.data.message);
         }
-    }
+      } catch (err) {
+        console.log(err?.message);
+        setError(err?.response.message);
+      }
+    };
 
-    fetchAppointments()
+    fetchAppointments();
   }, []);
-
-  const openModal = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    const modal = new window.bootstrap.Modal(
-      document.getElementById("appointmentModal")!
-    );
-    modal.show();
-  };
 
   return (
     <>
@@ -79,7 +70,11 @@ const PatientAppointments = () => {
                       {appointments.map((appointment, index) => (
                         <tr key={appointment.id}>
                           <td>{index + 1}</td>
-                          <td>{dayjs(appointment.appointmentDate).format("DD/MM/YYYY")}</td>
+                          <td>
+                            {dayjs(appointment.appointmentDate).format(
+                              "DD/MM/YYYY"
+                            )}
+                          </td>
                           <td>
                             {appointment.appointmentTime} (
                             {dayjs(appointment.appointmentDate)
@@ -89,7 +84,7 @@ const PatientAppointments = () => {
                           </td>
                           <td>{appointment.doctor.department.name}</td>
                           <td>{appointment.doctor.user.fullName}</td>
-                          
+
                           <td>
                             <span
                               className={`badge ${
@@ -104,15 +99,14 @@ const PatientAppointments = () => {
                             </span>
                           </td>
                           <td>
-                            <button
-                              className="btn btn-sm btn-warning me-1"
-                              onClick={() => openModal(appointment)}
-                            >
-                              <i className="fas fa-eye"></i>
-                            </button>
-                            <button className="btn btn-sm btn-primary">
-                              <i className="fas fa-prescription"></i>
-                            </button>
+                              <>
+                                <a
+                                  className="btn btn-sm btn-warning me-1"
+                                  href={`/patient/appointments/${appointment.id}`}
+                                >
+                                  <i className="fas fa-eye"></i>
+                                </a>
+                              </>
                           </td>
                         </tr>
                       ))}
@@ -125,63 +119,6 @@ const PatientAppointments = () => {
         </div>
       </section>
 
-      {/* Appointment Detail Modal */}
-      <div
-        className="modal fade"
-        id="appointmentModal"
-        tabIndex={-1}
-        aria-labelledby="appointmentModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="appointmentModalLabel">
-                Appointment Detail
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {selectedAppointment ? (
-                <>
-                  <p>
-                    <b>Order No:</b> {selectedAppointment.id}
-                  </p>
-                  <p>
-                    <b>Date:</b>{" "}
-                    {dayjs(selectedAppointment.appointmentDate).format(
-                      "DD/MM/YYYY"
-                    )}
-                  </p>
-                  <p>
-                    <b>Time:</b> {selectedAppointment.appointmentTime}
-                  </p>
-                  <p>
-                    <b>Department:</b>{" "}
-                    {selectedAppointment.doctor.specialization}
-                  </p>
-                  <p>
-                    <b>Doctor:</b> {selectedAppointment.doctor.user.fullName}
-                  </p>
-                  <p>
-                    <b>Status:</b> {selectedAppointment.status}
-                  </p>
-                  <p>
-                    <b>Notes:</b> {selectedAppointment.notes || "-"}
-                  </p>
-                </>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

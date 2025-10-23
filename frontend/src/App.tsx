@@ -17,6 +17,7 @@ import PatientLayout from "./components/patient/PatientLayout";
 import { AuthProvider } from "./context/AuthContext";
 import DoctorDetailPage from "./components/doctors/DoctorDetailPage";
 import PatientAppointments from "./components/patient/PatientAppointments";
+import AppointmentHistory from "./components/patient/AppointmentHistory";
 
 function App() {
   return (
@@ -45,12 +46,14 @@ function App() {
             />
             <Route path="/search" element={<SearchDoctorsPage />} />
             <Route path="/patient-login" element={<PatientLoginPage />} />
+            
 
             {/*Patient router*/}
             <Route path="/patient" element={<PatientLayout />}>
               <Route index path="dashboard" element={<PatientDashboard />} />
               <Route path="profile" element={<PatientProfile />} />
               <Route path="appointments" element={<PatientAppointments/>}/> 
+              <Route path="appointments/:id" element={<AppointmentHistory/>}/>
             </Route>
           </Route>
         </Routes>

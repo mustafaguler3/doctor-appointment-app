@@ -103,6 +103,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .statusCode(HttpStatus.OK.value())
                 .build();
     }
+
+    @Override
+    public ResponseDTO<AppointmentDTO> getAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("No found appointment"));
+
+        return ResponseDTO.<AppointmentDTO>builder()
+                .statusCode(200)
+                .data(modelMapper.map(appointment,AppointmentDTO.class))
+                .build();
+    }
 }
 
 
