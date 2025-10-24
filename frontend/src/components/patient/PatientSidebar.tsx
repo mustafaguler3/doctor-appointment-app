@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const PatientSidebar = () => {
   const { user,logout } = useAuth();
   const location = useLocation();
-  useEffect(() => {},[user])
+  useEffect(() => {},[user,logout])
   return (
     <div className="col-lg-3 mb-4">
       <div className="dashboard-sidebar">
@@ -54,9 +54,9 @@ const PatientSidebar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <button className={location.pathname.includes("/patient-login") ? "nav-link active" : "nav-link"}  onClick={logout}>
+              <a className="nav-link" onClick={logout}>
                 <i className="fas fa-sign-out-alt"></i> Logout
-              </button>
+              </a>
             </li>
           </ul>
         </nav>

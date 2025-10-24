@@ -18,6 +18,9 @@ import { AuthProvider } from "./context/AuthContext";
 import DoctorDetailPage from "./components/doctors/DoctorDetailPage";
 import PatientAppointments from "./components/patient/PatientAppointments";
 import AppointmentHistory from "./components/patient/AppointmentHistory";
+import DoctorLoginPage from "./components/doctors/DoctorLoginPage";
+import DoctorLayout from "./components/doctors/DoctorLayout";
+import DoctorDashboard from "./components/doctors/DoctorDashboard";
 
 function App() {
   return (
@@ -39,21 +42,28 @@ function App() {
             <Route path="/departments" element={<DepartmentsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/doctors" element={<DoctorsPage />} />
-            <Route path="/doctors/:id" element={<DoctorDetailPage/>}/>
+            <Route path="/doctors/:id" element={<DoctorDetailPage />} />
             <Route
               path="*"
               element={<ErrorPage message="This page doesn’t exist." />}
             />
             <Route path="/search" element={<SearchDoctorsPage />} />
+
+            {/*Doctor router */}
+            <Route path="/doctor" element={<DoctorLayout />}>
+              <Route index path="dashboard" element={<DoctorDashboard />} />
+            </Route>
+
+            <Route path="/doctor-login" element={<DoctorLoginPage />} />
             <Route path="/patient-login" element={<PatientLoginPage />} />
             
-
             {/*Patient router*/}
             <Route path="/patient" element={<PatientLayout />}>
               <Route index path="dashboard" element={<PatientDashboard />} />
               <Route path="profile" element={<PatientProfile />} />
-              <Route path="appointments" element={<PatientAppointments/>}/> 
-              <Route path="appointments/:id" element={<AppointmentHistory/>}/>
+
+              <Route path="appointments" element={<PatientAppointments />} />
+              <Route path="appointments/:id" element={<AppointmentHistory />} />
             </Route>
           </Route>
         </Routes>

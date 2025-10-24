@@ -13,9 +13,42 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Medicine {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Integer sNo;
     private String name;
+    private String dosage;
+    private String schedule;
+    private String days;
+    private String instructions;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prescription_id", nullable = false)
+    private Prescription prescription;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

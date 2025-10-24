@@ -41,6 +41,9 @@ public class Doctor {
     private DoctorStatus status;
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<Prescription> prescriptions;
 }
 
 

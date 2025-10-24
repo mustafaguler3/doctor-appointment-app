@@ -1,4 +1,56 @@
+import { useState } from "react";
+import AuthService from "../../services/AuthService";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
+import type { CustomJwtPayload } from "../../types/CustomeJwtPayload";
+
 const DoctorLoginPage = () => {
+  const navigate = useNavigate();
+  const {setUser} = useAuth()
+  const [error, setError] = useState(null);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData({ ...loginData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await AuthService.login(loginData);
+      if (response.data.statusCode === 200) {
+        console.log("Login success ", response.data);
+        const { accessToken, refreshToken } = response.data.data;
+        const decoded = jwtDecode<CustomJwtPayload>(accessToken)
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setLoginData(response)
+        setUser({
+          email: decoded.email,
+          imageUrl: decoded.imageUrl,
+          role: decoded.role,
+          id: decoded.id,
+          status: decoded.status,
+        })
+        navigate("/doctor/dashboard");
+      } else {
+        setError("Message :" + response.data.message);
+      }
+    } catch (err) {
+      console.log("Error :", err?.response.data.message);
+      setError("Message :" + err.response.data.message);
+    }
+  };
+
+  if (error) {
+    return <h1 className="alert alert-danger">{error}</h1>;
+  }
+
   return (
     <>
       <section className="page-banner">
@@ -11,7 +63,7 @@ const DoctorLoginPage = () => {
           <div className="row justify-content-center">
             <div className="col-lg-5 col-md-7">
               <div className="auth-card mb-5">
-                <form method="POST" action="doctor-dashboard.html">
+                <form onSubmit={handleSubmit}>
                   <div className="form-group">
                     <label htmlFor="email">Email Address</label>
                     <input
@@ -19,6 +71,7 @@ const DoctorLoginPage = () => {
                       className="form-control"
                       id="email"
                       name="email"
+                      onChange={handleOnChange}
                     />
                   </div>
                   <div className="form-group">
@@ -28,6 +81,7 @@ const DoctorLoginPage = () => {
                       className="form-control"
                       id="password"
                       name="password"
+                      onChange={handleOnChange}
                     />
                   </div>
                   <button
@@ -37,6 +91,7 @@ const DoctorLoginPage = () => {
                     <i className="fas fa-sign-in-alt me-2"></i>Login
                   </button>
                 </form>
+
                 <div className="auth-links">
                   <p>
                     <a href="doctor-forget-password.html">

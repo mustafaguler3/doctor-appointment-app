@@ -30,6 +30,9 @@ public class Patient {
     private String gender;
     private String state;
     private String zip;
+
+    @OneToOne(mappedBy = "patient")
+    private Prescription prescription;
 }
 
 
