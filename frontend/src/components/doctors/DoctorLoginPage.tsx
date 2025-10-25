@@ -7,11 +7,12 @@ import type { CustomJwtPayload } from "../../types/CustomeJwtPayload";
 
 const DoctorLoginPage = () => {
   const navigate = useNavigate();
-  const {setUser} = useAuth()
+  const { setUser } = useAuth();
   const [error, setError] = useState(null);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
+    loginType: "DOCTOR"
   });
 
   const handleOnChange = (e) => {
@@ -24,32 +25,29 @@ const DoctorLoginPage = () => {
     try {
       const response = await AuthService.login(loginData);
       if (response.data.statusCode === 200) {
-        console.log("Login success ", response.data);
         const { accessToken, refreshToken } = response.data.data;
-        const decoded = jwtDecode<CustomJwtPayload>(accessToken)
+        const decoded = jwtDecode<CustomJwtPayload>(accessToken);
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-        setLoginData(response)
+        setLoginData(response);
         setUser({
           email: decoded.email,
           imageUrl: decoded.imageUrl,
           role: decoded.role,
           id: decoded.id,
           status: decoded.status,
-        })
+        });
         navigate("/doctor/dashboard");
       } else {
         setError("Message :" + response.data.message);
       }
     } catch (err) {
-      console.log("Error :", err?.response.data.message);
-      setError("Message :" + err.response.data.message);
+      console.log("Error :", err.response?.data?.message);
+      setError("Message :" + err.response?.data?.message);
     }
   };
 
-  if (error) {
-    return <h1 className="alert alert-danger">{error}</h1>;
-  }
+
 
   return (
     <>
@@ -91,7 +89,11 @@ const DoctorLoginPage = () => {
                     <i className="fas fa-sign-in-alt me-2"></i>Login
                   </button>
                 </form>
-
+{error && (
+    <div className="mb-3">
+      <span className="text-danger">{error}</span>
+    </div>
+  )}
                 <div className="auth-links">
                   <p>
                     <a href="doctor-forget-password.html">

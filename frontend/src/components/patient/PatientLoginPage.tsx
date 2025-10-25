@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
 import { useState } from "react";
-import ErrorPage from "../../pages/ErrorPage";
 import { useAuth } from "../../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import type { CustomJwtPayload } from "../../types/CustomeJwtPayload";
@@ -13,6 +12,7 @@ const PatientLoginPage = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
+    loginType: "PATIENT",
   });
 
   const handleChange = (e) => {
@@ -24,29 +24,30 @@ const PatientLoginPage = () => {
     e.preventDefault();
     try {
       const response = await AuthService.login(loginData);
-      const { accessToken, refreshToken } = response.data.data;
-      const decoded = jwtDecode<CustomJwtPayload>(accessToken);
-      console.log("Decoded : ", decoded);
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      setLoginData(response);
-      setUser({
-        email: decoded.email,
-        role: decoded.role,
-        id: decoded.id,
-        username: decoded.sub,
-        fullName: decoded.fullName,
-      });
-      navigate("/patient/dashboard");
+      if (response.data.statusCode === 200) {
+        const { accessToken, refreshToken } = response.data.data;
+        const decoded = jwtDecode<CustomJwtPayload>(accessToken);
+        console.log("Decoded : ", decoded);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setLoginData(response);
+        setUser({
+          email: decoded.email,
+          role: decoded.role,
+          id: decoded.id,
+          username: decoded.sub,
+          fullName: decoded.fullName,
+        });
+        navigate("/patient/dashboard");
+      }else {
+        setError(response.data.message)
+        console.log("Error :",response.data)
+      }
     } catch (err) {
-      setError(err?.message);
-      console.error(err);
+      setError(err.response?.data?.message);
+      console.error("Error : ",err);
     }
   };
-
-  if (error) {
-    return <ErrorPage message={error} />;
-  }
 
   return (
     <>
@@ -90,7 +91,14 @@ const PatientLoginPage = () => {
                   >
                     <i className="fas fa-sign-in-alt me-2"></i>Login
                   </button>
+                  
                 </form>
+                {error && (
+    <div className="mb-3">
+      <span className="text-danger">{error}</span>
+    </div>
+  )}
+
                 <div className="auth-links">
                   <p>
                     <a href="/patient-forget-password">Forgot your password?</a>

@@ -31,7 +31,8 @@ const Navbar = () => {
               </button>
               <ul className="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a className="dropdown-item" href="/patient/dashboard">
+                  <a className="dropdown-item" href={
+                    user.role === "DOCTOR" ? "/doctor/dashboard" :"/patient/dashboard"}>
                     Dashboard
                   </a>
                 </li>

@@ -52,6 +52,19 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (request.getLoginType() == null) {
+            throw new RuntimeException("Login type can not be null");
+        }
+
+        if (request.getLoginType().equals("PATIENT") && user.getRole().equals(Role.DOCTOR)) {
+            throw new RuntimeException("This is a doctor account. Please use the doctor login page.");
+        }
+
+        if (request.getLoginType().equals("DOCTOR") && user.getRole().equals(Role.PATIENT)) {
+            throw new RuntimeException("This is a patient account. Please use the patient login page.");
+        }
+
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         String token = jwtService.generateToken(userDetails);

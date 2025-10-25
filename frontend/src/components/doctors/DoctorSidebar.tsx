@@ -1,7 +1,7 @@
 import { useAuth } from "../../hooks/useAuth";
 
 const DoctorSidebar = () => {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   return (
     <div className="col-lg-3 mb-4">
       <div className="dashboard-sidebar">
@@ -20,27 +20,27 @@ const DoctorSidebar = () => {
         <nav className="dashboard-nav">
           <ul className="nav flex-column">
             <li className="nav-item">
-              <a className="nav-link active" href="doctor-dashboard.html">
+              <a className="nav-link active" href="/doctor/dashboard">
                 <i className="fas fa-tachometer-alt"></i> Dashboard
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="doctor-profile.html">
+              <a className="nav-link" href="/doctor/profile">
                 <i className="fas fa-user"></i> My Profile
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="doctor-appointment-today.html">
+              <a className="nav-link" href="/doctor/appointment-today">
                 <i className="fas fa-calendar-alt"></i> Today Appointment
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="doctor-appointment-all.html">
+              <a className="nav-link" href="/doctor/appointment-all">
                 <i className="fas fa-list"></i> All Appointments
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="doctor-setup-schedule.html">
+              <a className="nav-link" href="/doctor/setup-schedule">
                 <i className="fas fa-clock"></i> Setup Schedule
               </a>
             </li>
@@ -55,7 +55,7 @@ const DoctorSidebar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="doctor-login.html">
+              <a className="nav-link" onClick={logout}>
                 <i className="fas fa-sign-out-alt"></i> Logout
               </a>
             </li>
