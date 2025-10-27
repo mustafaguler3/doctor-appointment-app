@@ -45,12 +45,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseDTO<AuthResponse> login(LoginRequestDTO request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("There is no user in this email "+
+                        request.getEmail()));
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword())
         );
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (request.getLoginType() == null) {
             throw new RuntimeException("Login type can not be null");
@@ -63,7 +65,6 @@ public class AuthServiceImpl implements AuthService {
         if (request.getLoginType().equals("DOCTOR") && user.getRole().equals(Role.PATIENT)) {
             throw new RuntimeException("This is a patient account. Please use the patient login page.");
         }
-
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -89,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .phone(request.getPhoneNumber())
+                .phone(request.getPhone())
                 .role(request.getRole())
                 .status(true)
                 .build();
@@ -102,24 +103,17 @@ public class AuthServiceImpl implements AuthService {
                     .patientNo(generatePatientNo())
                     .gender(request.getGender())
                     .state(request.getState())
+                    .address(request.getAddress())
+                    .city(request.getCity())
+                    .bloodGroup(request.getBloodGroup())
                     .zip(request.getZip())
                     .build();
             patientRepository.save(patient);
         }
-        else if (request.getRole() == Role.DOCTOR) {
-            Doctor doctor = Doctor.builder()
-                    .user(user)
-                    .doctorNo(generateDoctorNo())
-                    .designation(request.getDesignation())
-                    .biography(request.getBiography())
-                    .fee(request.getFee())
-                    .status(DoctorStatus.ACTIVE)
-                    .build();
-            doctorRepository.save(doctor);
-        }
 
         return ResponseDTO.builder()
                 .statusCode(201)
+                .data(user)
                 .message("User registered successfully as " + request.getRole())
                 .build();
     }

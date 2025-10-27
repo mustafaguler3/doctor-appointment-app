@@ -4,9 +4,9 @@ import { jwtDecode } from "jwt-decode";
 import type { CustomJwtPayload } from "../types/CustomeJwtPayload";
 
 export interface AuthContextType {
-  user: Partial<User> | null,
-  setUser: (user: Partial<User> | null) => void,
-  logout: () => void
+  user: Partial<User> | null;
+  setUser: (user: Partial<User> | null) => void;
+  logout: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,20 +17,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          const decoded = jwtDecode<CustomJwtPayload>(token)
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode<CustomJwtPayload>(token);
           setUser({
             email: decoded.email,
             fullName: decoded.fullName,
             role: decoded.role,
             status: decoded.status,
-            imageUrl: decoded.imageUrl
-          })
+            imageUrl: decoded.imageUrl,
+          });
+        } catch (error) {
+          console.error("Invalid token:", error);
+          setUser(null)
         }
-      } catch (error) {
-        console.error(error);
+      } else {
+        setUser(null)
       }
     };
     fetchCurrentUser();
@@ -40,14 +43,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
-    window.location.href = "/patient-login"
+    window.location.href = "/patient-login";
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout}}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-

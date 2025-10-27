@@ -22,6 +22,7 @@ import DoctorLoginPage from "./components/doctors/DoctorLoginPage";
 import DoctorLayout from "./components/doctors/DoctorLayout";
 import DoctorDashboard from "./components/doctors/DoctorDashboard";
 import DoctorProfile from "./components/doctors/DoctorProfile";
+import PatientRegisterPage from "./components/patient/PatientRegisterPage";
 
 function App() {
   return (
@@ -58,12 +59,12 @@ function App() {
 
             <Route path="/doctor-login" element={<DoctorLoginPage />} />
             <Route path="/patient-login" element={<PatientLoginPage />} />
-            
+            <Route path="/patient-register" element={<PatientRegisterPage />} />
             {/*Patient router*/}
             <Route path="/patient" element={<PatientLayout />}>
               <Route index path="dashboard" element={<PatientDashboard />} />
               <Route path="profile" element={<PatientProfile />} />
-
+              
               <Route path="appointments" element={<PatientAppointments />} />
               <Route path="appointments/:id" element={<AppointmentHistory />} />
             </Route>

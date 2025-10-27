@@ -19,6 +19,7 @@
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
     "dayjs": "^1.11.18",
+    "formik": "^2.4.6",
     "framer-motion": "^12.23.22",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.545.0",
@@ -26,7 +27,8 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

@@ -12,7 +12,7 @@ const DoctorLoginPage = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
-    loginType: "DOCTOR"
+    loginType: "DOCTOR",
   });
 
   const handleOnChange = (e) => {
@@ -39,15 +39,13 @@ const DoctorLoginPage = () => {
         });
         navigate("/doctor/dashboard");
       } else {
-        setError("Message :" + response.data.message);
+        setError(response.data.message);
       }
     } catch (err) {
       console.log("Error :", err.response?.data?.message);
       setError("Message :" + err.response?.data?.message);
     }
   };
-
-
 
   return (
     <>
@@ -89,11 +87,11 @@ const DoctorLoginPage = () => {
                     <i className="fas fa-sign-in-alt me-2"></i>Login
                   </button>
                 </form>
-{error && (
-    <div className="mb-3">
-      <span className="text-danger">{error}</span>
-    </div>
-  )}
+                {error && (
+                  <div className="mb-3">
+                    <span className="text-danger">{error}</span>
+                  </div>
+                )}
                 <div className="auth-links">
                   <p>
                     <a href="doctor-forget-password.html">

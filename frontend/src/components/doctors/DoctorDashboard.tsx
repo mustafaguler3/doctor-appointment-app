@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
 const DoctorDashboard = () => {
-  const { user } = useAuth()
+  const { user,logout } = useAuth()
+
+  useEffect(() => {},[user,logout])
   return (
     <>
       <div className="profile-header mb-4">

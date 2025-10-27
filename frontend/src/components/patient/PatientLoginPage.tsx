@@ -39,13 +39,13 @@ const PatientLoginPage = () => {
           fullName: decoded.fullName,
         });
         navigate("/patient/dashboard");
-      }else {
-        setError(response.data.message)
-        console.log("Error :",response.data)
+      } else {
+        setError(response.data.message);
+        console.log("Error :", response.data);
       }
     } catch (err) {
       setError(err.response?.data?.message);
-      console.error("Error : ",err);
+      console.error("Error : ", err);
     }
   };
 
@@ -91,13 +91,12 @@ const PatientLoginPage = () => {
                   >
                     <i className="fas fa-sign-in-alt me-2"></i>Login
                   </button>
-                  
                 </form>
                 {error && (
-    <div className="mb-3">
-      <span className="text-danger">{error}</span>
-    </div>
-  )}
+                  <div className="mb-3">
+                    <span className="text-danger">{error}</span>
+                  </div>
+                )}
 
                 <div className="auth-links">
                   <p>
