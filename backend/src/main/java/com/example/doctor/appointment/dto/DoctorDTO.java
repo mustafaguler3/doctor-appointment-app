@@ -4,6 +4,7 @@ import com.example.doctor.appointment.entity.Appointment;
 import com.example.doctor.appointment.entity.Department;
 import com.example.doctor.appointment.entity.User;
 import com.example.doctor.appointment.enums.DoctorStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -32,7 +33,6 @@ public class DoctorDTO {
     private String signature;
     private List<ScheduleDTO> schedules;
     private DoctorStatus status;
-    @JsonIgnore
-    private List<Appointment> appointments;
+    private List<AppointmentDTO> appointments;
 
 }

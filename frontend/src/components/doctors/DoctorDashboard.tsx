@@ -3,7 +3,6 @@ import { useAuth } from "../../hooks/useAuth";
 
 const DoctorDashboard = () => {
   const { user,logout } = useAuth()
-
   useEffect(() => {},[user,logout])
   return (
     <>

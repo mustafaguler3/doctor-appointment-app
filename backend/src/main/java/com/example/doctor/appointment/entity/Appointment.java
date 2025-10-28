@@ -76,9 +76,6 @@ public class Appointment {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public LocalTime getTime() {
-        return appointmentTime;
-    }
 }
 
 

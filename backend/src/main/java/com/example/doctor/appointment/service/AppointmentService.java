@@ -11,4 +11,5 @@ public interface AppointmentService {
     ResponseDTO<AppointmentDTO> createAppointment(AppointmentDTO request);
     ResponseDTO<List<AppointmentDTO>> findPatientAppointments();
     ResponseDTO<AppointmentDTO> getAppointment(Long appointmentId);
+    ResponseDTO<List<AppointmentDTO>> getDoctorAppointmentsToday();
 }

@@ -1,18 +1,19 @@
 package com.example.doctor.appointment.service.impl;
 
 import com.example.doctor.appointment.dto.AppointmentDTO;
+import com.example.doctor.appointment.dto.DoctorDTO;
 import com.example.doctor.appointment.dto.ResponseDTO;
+import com.example.doctor.appointment.dto.ScheduleDTO;
 import com.example.doctor.appointment.entity.Appointment;
+import com.example.doctor.appointment.entity.Doctor;
 import com.example.doctor.appointment.entity.Patient;
 import com.example.doctor.appointment.entity.Schedule;
 import com.example.doctor.appointment.enums.AppointmentStatus;
-import com.example.doctor.appointment.repository.AppointmentRepository;
-import com.example.doctor.appointment.repository.PatientRepository;
-import com.example.doctor.appointment.repository.ScheduleRepository;
-import com.example.doctor.appointment.repository.UserRepository;
+import com.example.doctor.appointment.repository.*;
 import com.example.doctor.appointment.service.AppointmentService;
 import com.example.doctor.appointment.util.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -25,41 +26,41 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final ModelMapper modelMapper;
 
     @Override
     public ResponseDTO<AppointmentDTO> createAppointment(AppointmentDTO request) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         Patient patient = patientRepository.findByUserId(userDetails.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        List<Appointment> appointment =
-                appointmentRepository.findAppointmentByDoctorIdAndAppointmentDate(
-                request.getDoctor().getId()
-                        ,request.getAppointmentTime()
-        );
+        Schedule schedule = scheduleRepository.findById(request.getScheduleId())
+                .orElseThrow(() -> new RuntimeException("No found schedule"));
 
-        boolean existing =
-                appointment
-                        .stream()
-                        .anyMatch(
-                a-> a.getAppointmentTime().equals(request.getAppointmentTime())
-        );
+        List<Appointment> appointments =
+                appointmentRepository.findAppointmentByDoctorIdAndAppointmentDate(
+                        schedule.getDoctor().getId(),
+                        schedule.getDate()
+                );
+
+        boolean existing = appointments.stream()
+                .anyMatch(a -> a.getAppointmentDate()
+                        .equals(schedule.getDate()));
+
         if (existing) {
             throw new RuntimeException("This time is already taken!");
         }
-        Schedule schedule = scheduleRepository.findById(request.getSchedule().getId())
-                .orElseThrow(() -> new RuntimeException("No found schedule"));
+
         if (!schedule.isAvailable()) {
             throw new RuntimeException("No available doctor in this time");
         }
@@ -76,11 +77,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         Appointment savedAppointment = appointmentRepository.save(app);
-
-        AppointmentDTO dto = modelMapper.map(savedAppointment,AppointmentDTO.class);
+        AppointmentDTO dto = modelMapper.map(savedAppointment, AppointmentDTO.class);
 
         return ResponseDTO.<AppointmentDTO>builder()
-                .statusCode(201)
+                .statusCode(HttpStatus.CREATED.value())
                 .data(dto)
                 .message("Appointment created successfully")
                 .build();
@@ -112,6 +112,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         return ResponseDTO.<AppointmentDTO>builder()
                 .statusCode(200)
                 .data(modelMapper.map(appointment,AppointmentDTO.class))
+                .build();
+    }
+
+    @Override
+    public ResponseDTO<List<AppointmentDTO>> getDoctorAppointmentsToday() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Doctor doctor = doctorRepository.findById(userDetails.getUser().getDoctor().getId())
+                .orElseThrow(() -> new RuntimeException("No found doctor"));
+        DoctorDTO doctorDto = modelMapper.map(doctor, DoctorDTO.class);
+        List<AppointmentDTO> appointments =
+                doctorDto.getAppointments()
+                        .stream()
+                        .map(appointmentDTO -> modelMapper.map(appointmentDTO,AppointmentDTO.class))
+                        .toList();
+
+        if (appointments.isEmpty()) {
+            throw new RuntimeException("No any appointments today");
+        }
+
+        return ResponseDTO.<List<AppointmentDTO>>builder()
+                .statusCode(200)
+                .data(appointments)
                 .build();
     }
 }
