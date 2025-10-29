@@ -18,16 +18,15 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
+    const token = localStorage.getItem("accessToken");
     const fetchCurrentUser = async () => {
-      const token = localStorage.getItem("accessToken");
       if (token) {
         try {
           const decoded = jwtDecode<CustomJwtPayload>(token);
-          const now = Date.now() / 100;
+          const now = Date.now() / 1000;
           if (decoded.exp < now) {
-            logout()
-            navigate("/patient-login")
+            logout();
+            navigate("/patient-login");
           }
           setUser({
             email: decoded.email,
@@ -38,20 +37,35 @@ export const AuthProvider = ({ children }) => {
           });
         } catch (error) {
           console.error("Invalid token:", error);
-          setUser(null)
+          setUser(null);
         }
       } else {
-        setUser(null)
+        setUser(null);
       }
     };
     fetchCurrentUser();
   }, []);
 
   const logout = () => {
+    const token = localStorage.getItem("accessToken");
+    let role = null;
+
+    if (token) {
+      try {
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        role = decoded.role;
+      } catch { /* empty */ }
+    }
+
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
-    window.location.href = "/patient-login";
+
+    if (role === "DOCTOR") {
+      window.location.href = "/doctor-login";
+    } else {
+      window.location.href = "/patient-login";
+    }
   };
 
   return (
