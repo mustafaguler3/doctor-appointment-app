@@ -24,6 +24,7 @@ import DoctorDashboard from "./components/doctors/DoctorDashboard";
 import DoctorProfile from "./components/doctors/DoctorProfile";
 import PatientRegisterPage from "./components/patient/PatientRegisterPage";
 
+
 function App() {
   return (
     <BrowserRouter>

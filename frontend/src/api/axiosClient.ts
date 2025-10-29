@@ -7,7 +7,6 @@ const axiosClient = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 axiosClient.interceptors.request.use((config: any) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
@@ -69,7 +68,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        // refresh token da expired ise -> logout
+        
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/patient-login";

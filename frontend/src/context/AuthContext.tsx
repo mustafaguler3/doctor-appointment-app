@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { type User } from "../types/User";
 import { jwtDecode } from "jwt-decode";
 import type { CustomJwtPayload } from "../types/CustomeJwtPayload";
+import { useNavigate } from "react-router-dom";
 
 export interface AuthContextType {
   user: Partial<User> | null;
@@ -14,13 +15,20 @@ export const AuthContext = createContext<AuthContextType>(undefined);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<Partial<User> | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+
     const fetchCurrentUser = async () => {
       const token = localStorage.getItem("accessToken");
       if (token) {
         try {
           const decoded = jwtDecode<CustomJwtPayload>(token);
+          const now = Date.now() / 100;
+          if (decoded.exp < now) {
+            logout()
+            navigate("/patient-login")
+          }
           setUser({
             email: decoded.email,
             fullName: decoded.fullName,
