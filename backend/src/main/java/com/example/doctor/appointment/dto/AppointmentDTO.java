@@ -16,6 +16,7 @@ public class AppointmentDTO {
     private AppointmentStatus status;
     private String notes;
     private Long doctorId;
+    private Long timeSlotId;
     private Long scheduleId;
     private LocalDateTime createdAt;
 }

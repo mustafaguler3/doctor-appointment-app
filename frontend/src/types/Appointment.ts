@@ -9,6 +9,7 @@ export interface Appointment {
     notes: string
     doctor: Doctor
     patient: Patient
+    timeSlotId: number
     status: any
     schedule: Schedule
     appointmentTime: any

@@ -1,190 +1,128 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  ToggleButton,
-  ToggleButtonGroup,
-  Divider,
-  Paper,
-} from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import type { TimeSlot } from "../../types/Schedule";
+import React, { useState, useEffect } from "react";
+import { Button } from "@mui/material";
+import type { Schedule, TimeSlot } from "../../types/Schedule";
 import type { Doctor } from "../../types/Doctor";
+import ScheduleService from "../../services/ScheduleService";
 import AppointmentService from "../../services/AppointmentService";
 import { toast } from "react-toastify";
 
-const generateTimeSlots = (start: string, end: string): TimeSlot[] => {
-  const slots: TimeSlot[] = [];
-  const time = new Date(`1970-01-01T${start}`);
-  const endTime = new Date(`1970-01-01T${end}`);
+interface DoctorScheduleProps {
+  doctor: Doctor;
+}
 
-  while (time < endTime) {
-    const hours = time.getHours().toString().padStart(2, "0");
-    const minutes = time.getMinutes().toString().padStart(2, "0");
-    slots.push({ time: `${hours}:${minutes}`, available: true });
-    time.setMinutes(time.getMinutes() + 10);
-  }
+export default function DoctorSchedule({ doctor }: DoctorScheduleProps) {
+  const [selectedDate, setSelectedDate] = useState<string>();
+  const [slots, setSlots] = useState<any[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot>();
+  const [loading, setLoading] = useState(false);
 
-  return slots;
-};
+  useEffect(() => {
+    if (!selectedDate) return;
+    ScheduleService.findSchedulesByDoctor(doctor.id, selectedDate)
+      .then((res) => {
+        const formattedSlots = res.data.data.map((slot: any) => ({
+          id: slot.id,
+          time: slot.time,
+          available: slot.available,
+        }));
 
-export default function DoctorSchedule({ doctor }: { doctor: Doctor }) {
+        setSlots(formattedSlots);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedDate, doctor.id]);
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
-  const selectedDay = doctor.schedules.find((s) => s.date === selectedDate);
-  const scheduleId = doctor.schedules.find((i) => i.id === doctor.id);
-
-  const data = {
-    doctor: { id: doctor.id },
-    schedule: { id: scheduleId.id },
-    notes: "Appointment try",
-  };
-  console.log("sechedule ID ",scheduleId)
-
-  const timeSlots: TimeSlot[] = selectedDay
-    ? generateTimeSlots(selectedDay.startTime, selectedDay.endTime)
-    : [];
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!selectedSlot) return;
+    setLoading(true);
+    const selectedSchedule = doctor.schedules.find(
+      (item) => item.date === selectedDate
+    );
     try {
-      const response = await AppointmentService.createAppointment(data);
-      if (response.data.statusCode === 200) {
-        toast.success("Appointment created successfully")
+      const payload = {
+        scheduleId: selectedSchedule.id,
+        timeSlotId: selectedSlot.id,
+        notes: "Appointment created from UI",
+      };
+      const response = await AppointmentService.createAppointment(payload);
+      if (
+        response.data.statusCode === 200 ||
+        response.data.statusCode === 201
+      ) {
+        toast.success("Appointment created!");
+        setSelectedSlot(null);
       } else {
-        console.log("error ", response.data.message);
+        toast.error(response.data.message);
       }
-    } catch (err) {
-      console.log("tr error", err?.message);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Card sx={{ maxWidth: 500, margin: "0 auto", boxShadow: 3 }}>
-      <CardContent>
-        <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "primary.main" }}
-        >
-          Create Appointment
-        </Typography>
-
-        <Typography align="center" color="text.secondary" gutterBottom>
-          Doctor:{" "}
-          <strong style={{ color: "#1976d2" }}>{doctor.user.fullName}</strong>
-        </Typography>
-
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          align="center"
-          sx={{ mb: 3 }}
-        >
-          {doctor.specialization} / {doctor.biography}
-        </Typography>
-
-        <Typography variant="subtitle2" gutterBottom>
-          📅 Select Date
-        </Typography>
-        <ToggleButtonGroup
-          value={selectedDate}
-          exclusive
-          onChange={(_, newDate) => {
-            setSelectedDate(newDate);
-            setSelectedTime(null);
-          }}
-          fullWidth
-          sx={{ flexWrap: "wrap", gap: 1 }}
-        >
-          {doctor.schedules.map((s) => (
-            <ToggleButton
-              key={s.id}
-              value={s.date}
-              sx={{
-                borderRadius: 2,
-                textTransform: "none",
-                flex: "1 1 30%",
-              }}
-            >
-              {new Date(s.date).toLocaleDateString("tr-TR", {
-                weekday: "short",
-                day: "2-digit",
-                month: "2-digit",
-              })}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-
-        {timeSlots.length > 0 && (
-          <>
-            <Divider sx={{ my: 3 }} />
-            <Typography variant="subtitle2" gutterBottom>
-              ⏰ Available hours
-            </Typography>
-            <Grid container spacing={1}>
-              {timeSlots.map((slot, i) => (
-                <Grid item xs={4} key={i} component={"div" as any}>
-                  <Button
-                    variant={
-                      selectedTime === slot.time ? "contained" : "outlined"
-                    }
-                    color="primary"
-                    disabled={!slot.available}
-                    fullWidth
-                    onClick={() => setSelectedTime(slot.time)}
-                    sx={{ textTransform: "none", borderRadius: 2 }}
-                  >
-                    {slot.time}
-                  </Button>
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-
-        {(selectedDate || selectedTime) && (
-          <Paper
-            elevation={0}
-            sx={{
-              backgroundColor: "#f8f9fa",
-              p: 2,
-              mt: 3,
-              borderRadius: 2,
-            }}
+    <div>
+      <h3>Select Date</h3>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "15px",
+          overflowX: "auto",
+        }}
+      >
+        {doctor.schedules?.map((s: Schedule) => (
+          <Button
+            key={s.id}
+            variant={selectedDate === s.date ? "contained" : "outlined"}
+            onClick={() => setSelectedDate(s.date)}
           >
-            <Typography variant="body2" gutterBottom>
-              📅 Date:{" "}
-              <strong>
-                {selectedDate
-                  ? new Date(selectedDate).toLocaleDateString("tr-TR")
-                  : "-"}
-              </strong>
-            </Typography>
-            <Typography variant="body2">
-              ⏰ Hour: <strong>{selectedTime || "-"}</strong>
-            </Typography>
-          </Paper>
-        )}
+            {new Date(s.date).toLocaleDateString("tr-TR", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+            })}
+          </Button>
+        ))}
+      </div>
 
-        <Button
-          variant="contained"
-          color="success"
-          fullWidth
-          sx={{ mt: 3, py: 1.3, borderRadius: 2, textTransform: "none" }}
-          startIcon={<CheckCircleOutlineIcon />}
-          disabled={!selectedDate || !selectedTime}
-          onClick={handleSubmit}
-        >
-          Apply
-        </Button>
-      </CardContent>
-    </Card>
+      {slots.length > 0 && (
+        <>
+          <h4>Available Time Slots</h4>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {slots?.map((slot) => (
+                <Button
+                  key={slot.id}
+                  variant={
+                    selectedSlot?.id === slot.id ? "contained" : "outlined"
+                  }
+                  disabled={!slot.available}
+                  onClick={() => setSelectedSlot(slot)}
+                >
+                  {slot.time}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {selectedSlot && (
+        <div style={{ marginTop: "10px" }}>
+          <p>
+            Selected: {selectedDate} {selectedSlot.time}
+          </p>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Booking..." : "Confirm Appointment"}
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }

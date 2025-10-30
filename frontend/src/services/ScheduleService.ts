@@ -1,9 +1,10 @@
 import axiosClient from "../api/axiosClient";
 
 const ScheduleService =  {
-    findScheduleByDoctor: (doctorId) => axiosClient.get("/schedules", {
+    findSchedulesByDoctor: (doctorId,date) => axiosClient.get("/schedules/doctor", {
         params: {
-            doctorId
+            doctorId,
+            date
         }
     }) 
 }

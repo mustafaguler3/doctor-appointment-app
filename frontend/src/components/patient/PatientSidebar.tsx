@@ -1,11 +1,10 @@
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useEffect } from "react";
+
 
 const PatientSidebar = () => {
   const { user,logout } = useAuth();
   const location = useLocation();
-  useEffect(() => {},[user,logout])
   return (
     <div className="col-lg-3 mb-4">
       <div className="dashboard-sidebar">
@@ -13,7 +12,7 @@ const PatientSidebar = () => {
           <div className="patient-avatar mb-0">
             <img
               src={`http://localhost:8080${
-                user?.imageUrl || "default.png"
+                user?.imageUrl
               }`}
               alt="Doctor"
               className="rounded-circle"

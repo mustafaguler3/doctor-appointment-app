@@ -4,10 +4,7 @@ import com.example.doctor.appointment.dto.AppointmentDTO;
 import com.example.doctor.appointment.dto.DoctorDTO;
 import com.example.doctor.appointment.dto.ResponseDTO;
 import com.example.doctor.appointment.dto.ScheduleDTO;
-import com.example.doctor.appointment.entity.Appointment;
-import com.example.doctor.appointment.entity.Doctor;
-import com.example.doctor.appointment.entity.Patient;
-import com.example.doctor.appointment.entity.Schedule;
+import com.example.doctor.appointment.entity.*;
 import com.example.doctor.appointment.enums.AppointmentStatus;
 import com.example.doctor.appointment.repository.*;
 import com.example.doctor.appointment.service.AppointmentService;
@@ -34,6 +31,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final TimeSlotRepository timeSlotRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -47,30 +45,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         Schedule schedule = scheduleRepository.findById(request.getScheduleId())
                 .orElseThrow(() -> new RuntimeException("No found schedule"));
 
-        List<Appointment> appointments =
-                appointmentRepository.findAppointmentByDoctorIdAndAppointmentDate(
-                        schedule.getDoctor().getId(),
-                        schedule.getDate()
-                );
+        TimeSlot slot = timeSlotRepository.findById(request.getTimeSlotId())
+                .orElseThrow(() -> new RuntimeException("Time slot not found"));
 
-        boolean existing = appointments.stream()
-                .anyMatch(a -> a.getAppointmentDate()
-                        .equals(schedule.getDate()));
-
-        if (existing) {
+        if (!slot.isAvailable()) {
             throw new RuntimeException("This time is already taken!");
         }
 
-        if (!schedule.isAvailable()) {
-            throw new RuntimeException("No available doctor in this time");
+        boolean existsAppointment = timeSlotRepository.existsByTimeAndAvailable(
+                slot.getTime(),true
+        );
+
+        if (existsAppointment) {
+            throw new RuntimeException("You have already appointment, if you have new one. Please cancel previous appointment");
         }
+
+
+        slot.setAvailable(false);
+        timeSlotRepository.save(slot);
 
         Appointment app = Appointment.builder()
                 .doctor(schedule.getDoctor())
                 .schedule(schedule)
                 .appointmentDate(schedule.getDate())
-                .appointmentTime(schedule.getStartTime())
-                .status(AppointmentStatus.COMPLETED)
+                .appointmentTime(slot.getTime())
+                .status(AppointmentStatus.PENDING)
                 .notes(request.getNotes())
                 .patient(patient)
                 .createdAt(LocalDateTime.now())

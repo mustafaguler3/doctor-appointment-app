@@ -1,21 +1,32 @@
 package com.example.doctor.appointment.controller;
 
+import com.example.doctor.appointment.dto.ScheduleDTO;
+import com.example.doctor.appointment.entity.Schedule;
 import com.example.doctor.appointment.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
 public class ScheduleController {
+
     private final ScheduleService scheduleService;
 
-    @GetMapping
-    public ResponseEntity<?> findSchedulesByDoctor(@RequestParam Long doctorId) {
-        return ResponseEntity.ok(scheduleService.findDoctorSchedulesById(doctorId));
+    @PostMapping("/new")
+    public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO dto) {
+        return ResponseEntity.ok(scheduleService.createScheduleWithTimeSlots(dto));
+    }
+
+    @GetMapping("/doctor")
+    public ResponseEntity<?> findSchedulesByDoctor(@RequestParam Long doctorId,
+                                                   @RequestParam  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(scheduleService.getSchedulesForDoctorByDate(doctorId,date));
     }
 }

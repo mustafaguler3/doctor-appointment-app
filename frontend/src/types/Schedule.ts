@@ -1,8 +1,11 @@
 import type { Doctor } from "./Doctor";
 
 export interface TimeSlot {
+  id: number
   time:string
   available: boolean;
+  schedule: Schedule;
+  bookedPatients: number
 }
 
 export interface Schedule {

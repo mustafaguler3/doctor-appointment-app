@@ -3,13 +3,9 @@ package com.example.doctor.appointment.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Data
@@ -24,7 +20,8 @@ public class Schedule {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-    private boolean available;
+    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
+    private List<TimeSlot> timeSlots;
     private int maxPatients;
 
     @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
