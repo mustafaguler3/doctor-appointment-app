@@ -17,6 +17,8 @@
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/PatientDTO.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/ResponseDTO.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/ScheduleDTO.java
+/Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/ScheduleResponseDTO.java
+/Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/TimeSlotDTO.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/UserDTO.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/request/LoginRequestDTO.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/dto/request/RefreshTokenDTO.java
@@ -48,6 +50,7 @@
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/repository/PatientRepository.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/repository/RefreshTokenRepository.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/repository/ScheduleRepository.java
+/Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/repository/TimeSlotRepository.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/repository/UserRepository.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/service/AppointmentService.java
 /Users/mustafa/Desktop/doctor-app/backend/src/main/java/com/example/doctor/appointment/service/AuthService.java

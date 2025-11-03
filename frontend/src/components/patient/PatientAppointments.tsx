@@ -9,7 +9,6 @@ declare global {
     bootstrap: any;
   }
 }
-
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [error, setError] = useState();
@@ -21,6 +20,7 @@ const PatientAppointments = () => {
         console.log(response.data);
         if (response.data.statusCode === 200) {
           setAppointments(response.data.data);
+          console.log("appointmetns : ",response.data.data)
         } else {
           setError(response.data.message);
         }
@@ -77,18 +77,18 @@ const PatientAppointments = () => {
                           </td>
                           <td>
                             {appointment.appointmentTime} (
-                            {dayjs(appointment.appointmentDate)
+                            {dayjs(appointment.appointmentTime)
                               .add(1, "hour")
                               .format("HH:mm")}
                             )
                           </td>
-                          <td>{appointment.doctor.department.name}</td>
-                          <td>{appointment.doctor.user.fullName}</td>
+                          <td>{appointment.departmentName}</td>
+                          <td>{appointment.fullName}</td>
 
                           <td>
                             <span
                               className={`badge ${
-                                appointment.status === "SCHEDULED"
+                                appointment.status === "PENDING"
                                   ? "bg-primary"
                                   : appointment.status === "COMPLETED"
                                   ? "bg-success"
@@ -99,14 +99,14 @@ const PatientAppointments = () => {
                             </span>
                           </td>
                           <td>
-                              <>
-                                <a
-                                  className="btn btn-sm btn-warning me-1"
-                                  href={`/patient/appointments/${appointment.id}`}
-                                >
-                                  <i className="fas fa-eye"></i>
-                                </a>
-                              </>
+                            <>
+                              <a
+                                className="btn btn-sm btn-warning me-1"
+                                href={`/patient/appointments/${appointment.id}`}
+                              >
+                                <i className="fas fa-eye"></i>
+                              </a>
+                            </>
                           </td>
                         </tr>
                       ))}
@@ -118,7 +118,6 @@ const PatientAppointments = () => {
           </div>
         </div>
       </section>
-
     </>
   );
 };

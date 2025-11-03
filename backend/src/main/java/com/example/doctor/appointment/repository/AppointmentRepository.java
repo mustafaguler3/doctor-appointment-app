@@ -1,6 +1,7 @@
 package com.example.doctor.appointment.repository;
 
 import com.example.doctor.appointment.entity.Appointment;
+import com.example.doctor.appointment.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -11,4 +12,5 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     List<Appointment> findAppointmentByDoctorIdAndAppointmentDate(Long doctorId, LocalDate time);
     List<Appointment> findAppointmentsByPatientId(Long patientId);
+    boolean existsByPatientIdAndStatusIn(Long patientId, List<AppointmentStatus> statuses);
 }

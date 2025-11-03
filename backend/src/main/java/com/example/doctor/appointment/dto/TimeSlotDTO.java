@@ -1,5 +1,6 @@
 package com.example.doctor.appointment.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class TimeSlotDTO {
     private LocalTime time;
     private boolean available = true;
     private int bookedPatients;
-    @JsonManagedReference
+    @JsonBackReference("t")
     private ScheduleDTO schedule;
 
     public TimeSlotDTO(Long id,LocalTime time, boolean available) {

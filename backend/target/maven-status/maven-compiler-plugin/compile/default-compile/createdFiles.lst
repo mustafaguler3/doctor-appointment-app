@@ -3,6 +3,7 @@ com/example/doctor/appointment/dto/AppointmentDTO.class
 com/example/doctor/appointment/entity/RefreshToken.class
 com/example/doctor/appointment/service/impl/ScheduleServiceImpl.class
 com/example/doctor/appointment/service/DoctorService.class
+com/example/doctor/appointment/repository/TimeSlotRepository.class
 com/example/doctor/appointment/service/impl/FileStorageServiceImpl.class
 com/example/doctor/appointment/service/impl/PatientServiceImpl.class
 com/example/doctor/appointment/service/impl/AppointmentServiceImpl.class
@@ -30,6 +31,7 @@ com/example/doctor/appointment/service/AuthService.class
 com/example/doctor/appointment/repository/AppointmentRepository.class
 com/example/doctor/appointment/exception/GlobalExceptionHandler.class
 com/example/doctor/appointment/dto/response/AuthResponse.class
+com/example/doctor/appointment/dto/ScheduleResponseDTO.class
 com/example/doctor/appointment/service/AppointmentService.class
 com/example/doctor/appointment/util/JwtAuthenticationFilter.class
 com/example/doctor/appointment/entity/Department$DepartmentBuilder.class
@@ -66,6 +68,7 @@ com/example/doctor/appointment/service/PatientService.class
 com/example/doctor/appointment/dto/ResponseDTO$ResponseDTOBuilder.class
 com/example/doctor/appointment/service/UserService.class
 com/example/doctor/appointment/entity/Medicine$MedicineBuilder.class
+com/example/doctor/appointment/dto/TimeSlotDTO.class
 com/example/doctor/appointment/controller/DepartmentController.class
 com/example/doctor/appointment/config/CorsConfig$1.class
 com/example/doctor/appointment/repository/UserRepository.class

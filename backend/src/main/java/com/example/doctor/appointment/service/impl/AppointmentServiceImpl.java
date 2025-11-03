@@ -52,9 +52,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException("This time is already taken!");
         }
 
-        boolean existsAppointment = timeSlotRepository.existsByTimeAndAvailable(
-                slot.getTime(),true
-        );
+        boolean existsAppointment = appointmentRepository
+                .existsByPatientIdAndStatusIn(patient.getId()
+                ,List.of(AppointmentStatus.PENDING,AppointmentStatus.SCHEDULED));
 
         if (existsAppointment) {
             throw new RuntimeException("You have already appointment, if you have new one. Please cancel previous appointment");
@@ -78,6 +78,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment savedAppointment = appointmentRepository.save(app);
         AppointmentDTO dto = modelMapper.map(savedAppointment, AppointmentDTO.class);
 
+
         return ResponseDTO.<AppointmentDTO>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .data(dto)
@@ -94,8 +95,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.findAppointmentsByPatientId(userDetails.getUser().getPatient().getId());
 
         List<AppointmentDTO> dtos = appointments.stream()
-                .map(appointment -> modelMapper.map(appointment,AppointmentDTO.class))
-                .toList();
+                .map(appointment -> {
+                    AppointmentDTO dty = modelMapper.map(appointment,AppointmentDTO.class);
+                    dty.setDepartmentName(
+                            appointment.getDoctor() != null && appointment.getDoctor().getDepartment() != null ? appointment.getDoctor().getDepartment().getName() : null
+                    );
+                    dty.setDoctorId(appointment.getDoctor() != null ? appointment.getDoctor().getId() : null);
+                    dty.setFullName(appointment.getDoctor().getUser().getFullName());
+                    return dty;
+                }).toList();
 
         return ResponseDTO.<List<AppointmentDTO>>builder()
                 .data(dtos)
@@ -135,6 +143,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         return ResponseDTO.<List<AppointmentDTO>>builder()
                 .statusCode(200)
                 .data(appointments)
+                .build();
+    }
+
+    @Override
+    public ResponseDTO<String> cancelAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        Schedule schedule = scheduleRepository.findById(appointment.getSchedule().getId())
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+        List<TimeSlot> slots = schedule.getTimeSlots();
+        for (TimeSlot slot : slots) {
+            TimeSlot dbSlot = timeSlotRepository.findById(slot.getId())
+                    .orElseThrow(() -> new RuntimeException("Timeslot not found"));
+            dbSlot.setAvailable(true);
+            timeSlotRepository.save(dbSlot);
+        }
+
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            throw new RuntimeException("Appointment has been already canceled");
+        }
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        appointmentRepository.save(appointment);
+        return ResponseDTO.<String>builder()
+                .message("Appointment updated successfully")
                 .build();
     }
 }

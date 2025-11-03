@@ -4,23 +4,25 @@ import com.example.doctor.appointment.entity.Appointment;
 import com.example.doctor.appointment.entity.Department;
 import com.example.doctor.appointment.entity.User;
 import com.example.doctor.appointment.enums.DoctorStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class DoctorDTO {
     private Long id;
     private Long userId;
     private UserDTO user;
     private Long departmentId;
-    @JsonManagedReference
+    @JsonBackReference("d")
     private DepartmentDTO department;
     private String doctorNo;
     private String designation;
@@ -31,8 +33,10 @@ public class DoctorDTO {
     private String zip;
     private Double fee;
     private String signature;
+    @JsonManagedReference("s")
     private List<ScheduleDTO> schedules;
     private DoctorStatus status;
+    @JsonManagedReference("a")
     private List<AppointmentDTO> appointments;
 
 }

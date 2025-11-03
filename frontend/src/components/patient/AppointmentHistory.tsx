@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import type { Appointment } from "../../types/Appointment";
 import AppointmentService from "../../services/AppointmentService";
-
+import { toast } from "react-toastify";
 
 const AppointmentHistory = () => {
   const [appointment, setAppointment] = useState<Appointment | null>(null);
@@ -21,12 +21,32 @@ const AppointmentHistory = () => {
         }
       } catch (err: any) {
         console.error(err);
-        setError(err?.response?.data?.message || "An unexpected error occurred");
+        setError(
+          err?.response?.data?.message || "An unexpected error occurred"
+        );
       }
     };
 
     fetchAppointment();
   }, [id]);
+
+  const cancelAppointment = async () => {
+    if (!appointment) return;
+
+    try {
+      await AppointmentService.cancelAppointment(appointment.id);
+      toast.success("Appointment cancelled successfully");
+
+      const refreshed = await AppointmentService.getAppointmentById(
+        appointment.id
+      );
+      if (refreshed.data.statusCode === 200) {
+        setAppointment(refreshed.data.data);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
 
   if (error)
     return (
@@ -72,7 +92,9 @@ const AppointmentHistory = () => {
                   <div>
                     <h6 className="mb-0 text-muted">Date</h6>
                     <p className="fw-semibold mb-0">
-                      {dayjs(appointment.appointmentDate).format("DD MMMM YYYY")}
+                      {dayjs(appointment.appointmentDate).format(
+                        "DD MMMM YYYY"
+                      )}
                     </p>
                   </div>
                 </div>
@@ -96,7 +118,7 @@ const AppointmentHistory = () => {
                   <div>
                     <h6 className="mb-0 text-muted">Department</h6>
                     <p className="fw-semibold mb-0">
-                      {appointment.doctor.department.name}
+                      {appointment.departmentName}
                     </p>
                   </div>
                 </div>
@@ -107,9 +129,7 @@ const AppointmentHistory = () => {
                   <i className="fas fa-user-md text-secondary me-3 fs-5"></i>
                   <div>
                     <h6 className="mb-0 text-muted">Doctor</h6>
-                    <p className="fw-semibold mb-0">
-                      {appointment.doctor.user.fullName}
-                    </p>
+                    <p className="fw-semibold mb-0">{appointment.fullName}</p>
                   </div>
                 </div>
               </div>
@@ -121,7 +141,7 @@ const AppointmentHistory = () => {
                     <h6 className="mb-0 text-muted">Status</h6>
                     <span
                       className={`badge px-3 py-2 ${
-                        appointment.status === "SCHEDULED"
+                        appointment.status === "PENDING"
                           ? "bg-primary"
                           : appointment.status === "COMPLETED"
                           ? "bg-success"
@@ -147,12 +167,23 @@ const AppointmentHistory = () => {
               </div>
             </div>
 
-            <div className="text-end mt-4">
+            <div className="d-flex justify-content-end mt-5 gap-3">
               <button
                 className="btn btn-outline-secondary rounded-pill px-4"
                 onClick={() => window.history.back()}
               >
                 <i className="fas fa-arrow-left me-2"></i> Back to Appointments
+              </button>
+
+              <button
+                className="btn btn-outline-danger rounded-pill px-4"
+                onClick={cancelAppointment}
+                disabled={appointment.status === "CANCELLED"}
+              >
+                <i className="fas fa-times me-2"></i>
+                {appointment.status === "CANCELLED"
+                  ? "Cancelled"
+                  : "Cancel Appointment"}
               </button>
             </div>
           </div>

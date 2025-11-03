@@ -3,6 +3,7 @@ import axiosClient from "../api/axiosClient";
 const AppointmentService = {
     createAppointment: (data) => axiosClient.post("/appointments/new",data),
     getPatientAppointments: () => axiosClient.get("/appointments/me"),
+    cancelAppointment: (id) => axiosClient.put(`/appointments/me/${id}/cancel`),
     getAppointmentById: (id) => axiosClient.get("/appointments/"+id)
 }
 

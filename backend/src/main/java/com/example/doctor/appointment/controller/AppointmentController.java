@@ -19,15 +19,20 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/new")
     @PreAuthorize("hasAuthority('PATIENT')")
-    public ResponseDTO<AppointmentDTO> createAppointment(@Valid @RequestBody AppointmentDTO request) {
-        return appointmentService.createAppointment(request);
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO request) {
+        return ResponseEntity.ok(appointmentService.createAppointment(request));
     }
 
     @GetMapping("/{appointmentId}")
     public ResponseEntity<?> getAppointment(@PathVariable Long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));
+    }
+
+    @PutMapping("/me/{appointmentId}/cancel")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
     }
 
     @GetMapping("/me")
