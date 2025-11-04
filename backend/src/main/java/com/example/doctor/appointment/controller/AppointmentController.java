@@ -25,6 +25,17 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.createAppointment(request));
     }
 
+    @GetMapping("/doctor/appointment-all")
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    public ResponseEntity<?> getAppointmentsByDoctor(){
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor());
+    }
+
+    @GetMapping("/doctor/appointments/{appointmentId}")
+    public ResponseEntity<?> getDoctorAppointmentByDoctor(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentDetailByDoctor(appointmentId));
+    }
+
     @GetMapping("/{appointmentId}")
     public ResponseEntity<?> getAppointment(@PathVariable Long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));

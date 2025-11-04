@@ -23,7 +23,8 @@ import DoctorLayout from "./components/doctors/DoctorLayout";
 import DoctorDashboard from "./components/doctors/DoctorDashboard";
 import DoctorProfile from "./components/doctors/DoctorProfile";
 import PatientRegisterPage from "./components/patient/PatientRegisterPage";
-
+import DoctorAppointments from "./components/doctors/DoctorAppointments";
+import DoctorAppointmentDetail from "./components/doctors/DoctorAppointmentDetail";
 
 function App() {
   return (
@@ -56,6 +57,8 @@ function App() {
             <Route path="/doctor" element={<DoctorLayout />}>
               <Route index path="dashboard" element={<DoctorDashboard />} />
               <Route path="profile" element={<DoctorProfile />} />
+              <Route path="appointment-all" element={<DoctorAppointments />}/>
+              <Route path="appointment-all/:id" element={<DoctorAppointmentDetail/>}/>
             </Route>
 
             <Route path="/doctor-login" element={<DoctorLoginPage />} />
