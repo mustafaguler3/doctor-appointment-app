@@ -1,6 +1,6 @@
 Doctor Dashboard
 
-![1762195524631](image/Readme/1762195524631.png)
+![1762373368001](image/Readme/1762373368001.png)
 
 Patient Dashboard
 
