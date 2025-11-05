@@ -23,7 +23,7 @@ public class DoctorController {
     @GetMapping("/appointments/today")
     @PreAuthorize("hasAuthority('DOCTOR')")
     public ResponseEntity<?> findDoctorAppointmentByToday() {
-        return ResponseEntity.ok(appointmentService.getDoctorAppointmentsToday());
+        return ResponseEntity.ok(appointmentService.getTodayAppointmentsByDoctor());
     }
     @GetMapping
     public ResponseEntity<?> findDoctors(){

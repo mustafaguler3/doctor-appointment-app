@@ -1,93 +1,100 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {}, [user, logout]);
+
   return (
-    <>
-      <nav className="navbar navbar-light bg-white shadow-sm">
-        <div className="container">
-          <a className="navbar-brand" href="/">
-            <i className="fas fa-stethoscope me-2"></i>HealthPro
-          </a>
-          {!user ? (
-            <div className="ms-auto">
-              <a href="/patient-login" className="btn btn-outline-primary me-2">
-                Patient Login
-              </a>
-              <a href="/doctor-login" className="btn btn-outline-success">
-                Doctor Login
-              </a>
-            </div>
-          ) : (
-            <div className="dropdown">
-              <button
-                className="btn btn-outline-secondary dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-              >
-                {user?.email || "Profile"}
-              </button>
-              <ul className="dropdown-menu dropdown-menu-end">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      {/* Üst navbar */}
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+        <Link to="/" className="flex items-center text-xl font-semibold text-blue-600">
+          <i className="fas fa-stethoscope mr-2"></i>HealthPro
+        </Link>
+
+        {!user ? (
+          <div className="flex gap-3">
+            <Link
+              to="/patient-login"
+              className="border border-blue-500 text-blue-600 px-3 py-1 rounded-lg hover:bg-blue-50 transition"
+            >
+              Patient Login
+            </Link>
+            <Link
+              to="/doctor-login"
+              className="border border-green-500 text-green-600 px-3 py-1 rounded-lg hover:bg-green-50 transition"
+            >
+              Doctor Login
+            </Link>
+          </div>
+        ) : (
+          <div className="relative">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="border border-gray-300 px-3 py-1 rounded-lg hover:bg-gray-100 transition"
+            >
+              {user?.email || "Profile"} <i className="fas fa-chevron-down ml-1"></i>
+            </button>
+
+            {isMenuOpen && (
+              <ul className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-md">
                 <li>
-                  <a className="dropdown-item" href={
-                    user.role === "DOCTOR" ? "/doctor/dashboard" :"/patient/dashboard"}>
+                  <Link
+                    to={
+                      user.role === "DOCTOR"
+                        ? "/doctor/dashboard"
+                        : "/patient/dashboard"
+                    }
+                    className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
                     Dashboard
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <button className="dropdown-item" onClick={logout}>
+                  <button
+                    onClick={logout}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                  >
                     Logout
                   </button>
                 </li>
               </ul>
-            </div>
-          )}
-        </div>
-      </nav>
-      <nav className="navbar navbar-expand-lg main-nav">
-        <div className="container">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="mainNavbar">
-            <ul className="navbar-nav mx-auto">
-              <li className="nav-item">
-                <a className="nav-link" href="/">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/doctors">
-                  Doctors
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/departments">
-                  Departments
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/contact">
-                  Contact
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="patient-appointment-new">
-                  Make Appointment
-                </a>
-              </li>
-            </ul>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Alt navbar */}
+      <nav className="bg-blue-300 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-center items-center">
+          <div className="flex items-center space-x-6">
+            <Link to="/" className="hover:text-gray-200 transition">
+              Home
+            </Link>
+            <Link to="/doctors" className="hover:text-gray-200 transition">
+              Doctors
+            </Link>
+            <Link to="/departments" className="hover:text-gray-200 transition">
+              Departments
+            </Link>
+            <Link to="/contact" className="hover:text-gray-200 transition">
+              Contact
+            </Link>
+            <Link
+              to="/patient-appointment-new"
+              className="bg-white text-blue-600 px-3 py-1 rounded-lg font-medium hover:bg-blue-50 transition"
+            >
+              Make Appointment
+            </Link>
           </div>
         </div>
       </nav>
-    </>
+    </header>
   );
 };
 

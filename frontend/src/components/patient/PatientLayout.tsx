@@ -3,16 +3,16 @@ import PatientSidebar from "./PatientSidebar";
 
 const PatientLayout = () => {
   return (
-      <section className="py-5">
-        <div className="container">
-          <div className="row">
-            <PatientSidebar />
-            <div className="col-lg-9">
-              <Outlet />
-            </div>
-          </div>
+    <section className="py-10 bg-gray-50 min-h-screen">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <PatientSidebar />
+          <main className="flex-1">
+            <Outlet />
+          </main>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 

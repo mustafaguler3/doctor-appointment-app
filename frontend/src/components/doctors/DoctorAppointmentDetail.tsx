@@ -73,7 +73,9 @@ const DoctorAppointmentDetail = () => {
               <span
                 className={`px-3 py-1 rounded-full text-sm font-semibold ${
                   doctorAppointment.status === "COMPLETED"
-                    ? "bg-green-100 text-green-600"
+                    ? "bg-green-100" 
+                    : doctorAppointment.status === "PENDING"
+                    ? "bg-blue-600 text-white"
                     : "bg-yellow-100 text-yellow-600"
                 }`}
               >

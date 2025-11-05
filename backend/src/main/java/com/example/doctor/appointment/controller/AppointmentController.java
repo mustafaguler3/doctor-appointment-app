@@ -11,43 +11,61 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/appointments")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @PostMapping("/new")
+    @PostMapping("/appointments")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO request) {
         return ResponseEntity.ok(appointmentService.createAppointment(request));
     }
 
-    @GetMapping("/doctor/appointment-all")
-    @PreAuthorize("hasAuthority('DOCTOR')")
-    public ResponseEntity<?> getAppointmentsByDoctor(){
-        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor());
+    @GetMapping("/patients/me/appointments")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<?> getPatientAppointments() {
+        return ResponseEntity.ok(appointmentService.findPatientAppointments());
     }
 
-    @GetMapping("/doctor/appointments/{appointmentId}")
-    public ResponseEntity<?> getDoctorAppointmentByDoctor(@PathVariable Long appointmentId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentDetailByDoctor(appointmentId));
-    }
-
-    @GetMapping("/{appointmentId}")
-    public ResponseEntity<?> getAppointment(@PathVariable Long appointmentId) {
+    @GetMapping("/patient/me/appointments/{appointmentId}")
+    public ResponseEntity<?> getPatientAppointmentById(@PathVariable Long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));
     }
 
-    @PutMapping("/me/{appointmentId}/cancel")
-    public ResponseEntity<?> cancelAppointment(@PathVariable Long appointmentId) {
+    @PatchMapping("/patients/me/appointments/{appointmentId}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<?> cancelPatientAppointment(
+            @PathVariable Long appointmentId,
+            @RequestBody Map<String, String> updateRequest // ör: {"status": "CANCELLED"}
+    ) {
         return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> findPatientAppointments() {
-        return ResponseEntity.ok(appointmentService.findPatientAppointments());
+    @GetMapping("/doctors/me/appointments")
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    public ResponseEntity<?> getDoctorAppointments() {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor());
+    }
+
+    @GetMapping("/doctors/me/appointments/today")
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    public ResponseEntity<?> getDoctorTodayAppointments() {
+        return ResponseEntity.ok(appointmentService.getTodayAppointmentsByDoctor());
+    }
+
+    @GetMapping("/doctors/me/appointments/{appointmentId}")
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    public ResponseEntity<?> getDoctorAppointmentDetail(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentDetailByDoctor(appointmentId));
+    }
+
+    @GetMapping("/appointments/{appointmentId}")
+    public ResponseEntity<?> getAppointment(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));
     }
 }

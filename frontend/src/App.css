@@ -1,3 +1,6 @@
+a {
+  text-decoration: none !important;
+}
 
 :root {
     --primary-blue: #2c5aa0;

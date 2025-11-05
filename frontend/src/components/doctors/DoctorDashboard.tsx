@@ -1,61 +1,66 @@
 import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
+
 const DoctorDashboard = () => {
-  const { user,logout } = useAuth()
-  useEffect(() => {},[user,logout])
+  const { user, logout } = useAuth();
+
+  useEffect(() => {}, [user, logout]);
+
+  const stats = [
+    {
+      title: "Today Pending Appointments",
+      value: 0,
+      icon: "fas fa-calendar-check",
+      color: "text-yellow-500",
+    },
+    {
+      title: "Today Completed Appointments",
+      value: 0,
+      icon: "fas fa-calendar-check",
+      color: "text-green-500",
+    },
+    {
+      title: "Total Earning (Today)",
+      value: "$0",
+      icon: "fas fa-pills",
+      color: "text-blue-500",
+    },
+    {
+      title: "Total Earning (Lifetime)",
+      value: "$0",
+      icon: "fas fa-file-medical-alt",
+      color: "text-purple-500",
+    },
+  ];
+
   return (
-    <>
-      <div className="profile-header mb-4">
-        <h2>Welcome back, {user?.fullName}</h2>
+    <div className="p-6">
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Welcome back, <span className="text-blue-600">{user?.fullName}</span>
+        </h2>
       </div>
-      <div className="row mb-4">
-        <div className="col-lg-6 col-md-6 mb-3">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="fas fa-calendar-check"></i>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {stats.map((item, idx) => (
+          <div
+            key={idx}
+            className="flex items-center bg-white rounded-2xl shadow p-4 hover:shadow-lg transition"
+          >
+            <div
+              className={`text-4xl ${item.color} bg-gray-50 p-4 rounded-full mr-4`}
+            >
+              <i className={item.icon}></i>
             </div>
-            <div className="stat-content">
-              <h3>0</h3>
-              <p>Today Pending Appointments</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 mb-3">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="fas fa-calendar-check"></i>
-            </div>
-            <div className="stat-content">
-              <h3>0</h3>
-              <p>Today Completed Appointments</p>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800">{item.value}</h3>
+              <p className="text-gray-600">{item.title}</p>
             </div>
           </div>
-        </div>
-        <div className="col-lg-6 col-md-6 mb-3">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="fas fa-pills"></i>
-            </div>
-            <div className="stat-content">
-              <h3>$0</h3>
-              <p>Total Earning (Today)</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 mb-3">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="fas fa-file-medical-alt"></i>
-            </div>
-            <div className="stat-content">
-              <h3>$0</h3>
-              <p>Total Earning (Lifetime)</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@ package com.example.doctor.appointment.dto;
 
 import com.example.doctor.appointment.enums.AppointmentStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public class DoctorAppointmentDTO {
     private Long id;
     private String patientNo;

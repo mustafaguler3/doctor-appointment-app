@@ -3,6 +3,7 @@ package com.example.doctor.appointment.service.impl;
 import com.example.doctor.appointment.dto.*;
 import com.example.doctor.appointment.entity.*;
 import com.example.doctor.appointment.enums.AppointmentStatus;
+import com.example.doctor.appointment.exception.AppointmentNotFound;
 import com.example.doctor.appointment.repository.*;
 import com.example.doctor.appointment.service.AppointmentService;
 import com.example.doctor.appointment.util.UserDetailsImpl;
@@ -120,30 +121,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public ResponseDTO<List<AppointmentDTO>> getDoctorAppointmentsToday() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        Doctor doctor = doctorRepository.findById(userDetails.getUser().getDoctor().getId())
-                .orElseThrow(() -> new RuntimeException("No found doctor"));
-        DoctorDTO doctorDto = modelMapper.map(doctor, DoctorDTO.class);
-        List<AppointmentDTO> appointments =
-                doctorDto.getAppointments()
-                        .stream()
-                        .map(appointmentDTO -> modelMapper.map(appointmentDTO,AppointmentDTO.class))
-                        .toList();
-
-        if (appointments.isEmpty()) {
-            throw new RuntimeException("No any appointments today");
-        }
-
-        return ResponseDTO.<List<AppointmentDTO>>builder()
-                .statusCode(200)
-                .data(appointments)
-                .build();
-    }
-
-    @Override
     public ResponseDTO<String> cancelAppointment(Long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
@@ -180,20 +157,22 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<DoctorAppointmentDTO> dtos =
                 appointments.stream().map(
                         appointment -> {
-                            DoctorAppointmentDTO doctorAppointmentDTO = new DoctorAppointmentDTO();
-                            doctorAppointmentDTO.setAppointmentDate(appointment.getAppointmentDate());
-                            doctorAppointmentDTO.setAppointmentTime(appointment.getAppointmentTime());
-                            doctorAppointmentDTO.setPatientName(appointment.getPatient().getUser().getFullName());
-                            doctorAppointmentDTO.setNotes(appointment.getNotes());
-                            doctorAppointmentDTO.setStatus(appointment.getStatus());
-                            doctorAppointmentDTO.setDepartmentName(appointment.getDoctor().getDepartment().getName());
-                            doctorAppointmentDTO.setId(appointment.getId());
-                            doctorAppointmentDTO.setPatientNo(appointment.getPatient().getPatientNo());
-                            doctorAppointmentDTO.setPatientEmail(appointment.getPatient().getUser().getEmail());
-                            doctorAppointmentDTO.setBloodGroup(appointment.getPatient().getBloodGroup());
-                            doctorAppointmentDTO.setGender(appointment.getPatient().getGender());
-                            doctorAppointmentDTO.setPhoneNumber(appointment.getPatient().getUser().getPhone());
-                            return doctorAppointmentDTO;
+                            DoctorAppointmentDTO dto = DoctorAppointmentDTO
+                                    .builder()
+                                    .id(appointment.getId())
+                                    .notes(appointment.getNotes())
+                                    .appointmentDate(appointment.getAppointmentDate())
+                                    .appointmentTime(appointment.getAppointmentTime())
+                                    .gender(appointment.getPatient().getGender())
+                                    .bloodGroup(appointment.getPatient().getBloodGroup())
+                                    .patientEmail(appointment.getPatient().getUser().getEmail())
+                                    .phoneNumber(appointment.getPatient().getUser().getPhone())
+                                    .patientName(appointment.getPatient().getUser().getFullName())
+                                    .patientNo(appointment.getPatient().getPatientNo())
+                                    .departmentName(appointment.getDoctor().getDepartment().getName())
+                                    .status(appointment.getStatus())
+                                    .build();
+                            return dto;
                         }
                 ).toList();
 
@@ -209,23 +188,69 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-        DoctorAppointmentDTO doctorAppointmentDTO = new DoctorAppointmentDTO();
-        doctorAppointmentDTO.setAppointmentTime(appointment.getAppointmentTime());
-        doctorAppointmentDTO.setAppointmentDate(appointment.getAppointmentDate());
-        doctorAppointmentDTO.setId(appointment.getId());
-        doctorAppointmentDTO.setDepartmentName(appointment.getDoctor().getDepartment().getName());
-        doctorAppointmentDTO.setPatientNo(appointment.getPatient().getPatientNo());
-        doctorAppointmentDTO.setStatus(appointment.getStatus());
-        doctorAppointmentDTO.setPatientName(appointment.getPatient().getUser().getFullName());
-        doctorAppointmentDTO.setNotes(appointment.getNotes());
-        doctorAppointmentDTO.setPatientEmail(appointment.getPatient().getUser().getEmail());
-        doctorAppointmentDTO.setBloodGroup(appointment.getPatient().getBloodGroup());
-        doctorAppointmentDTO.setGender(appointment.getPatient().getGender());
-        doctorAppointmentDTO.setPhoneNumber(appointment.getPatient().getUser().getPhone());
+        DoctorAppointmentDTO dto = DoctorAppointmentDTO
+                .builder()
+                .id(appointment.getId())
+                .notes(appointment.getNotes())
+                .appointmentDate(appointment.getAppointmentDate())
+                .appointmentTime(appointment.getAppointmentTime())
+                .gender(appointment.getPatient().getGender())
+                .bloodGroup(appointment.getPatient().getBloodGroup())
+                .patientEmail(appointment.getPatient().getUser().getEmail())
+                .phoneNumber(appointment.getPatient().getUser().getPhone())
+                .patientName(appointment.getPatient().getUser().getFullName())
+                .patientNo(appointment.getPatient().getPatientNo())
+                .departmentName(appointment.getDoctor().getDepartment().getName())
+                .status(appointment.getStatus())
+                .build();
 
         return ResponseDTO.<DoctorAppointmentDTO>builder()
                 .statusCode(HttpStatus.OK.value())
-                .data(doctorAppointmentDTO)
+                .data(dto)
+                .build();
+    }
+
+    @Override
+    public ResponseDTO<List<DoctorAppointmentDTO>> getTodayAppointmentsByDoctor() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        LocalDate today = LocalDate.now();
+        List<Appointment> appointments = appointmentRepository.findTodayAppointmentsForDoctor(
+                userDetails.getUser().getDoctor().getId(),
+                today
+        );
+
+        if (appointments.isEmpty()) {
+            throw new AppointmentNotFound("No any appointments in Today");
+        }
+
+        System.out.println("AAAA : {}"+appointments);
+
+        List<DoctorAppointmentDTO> dtos = appointments
+                .stream()
+                .map(appointment -> {
+                    DoctorAppointmentDTO dto = DoctorAppointmentDTO
+                            .builder()
+                            .id(appointment.getId())
+                            .notes(appointment.getNotes())
+                            .appointmentDate(appointment.getAppointmentDate())
+                            .appointmentTime(appointment.getAppointmentTime())
+                            .gender(appointment.getPatient().getGender())
+                            .bloodGroup(appointment.getPatient().getBloodGroup())
+                            .patientEmail(appointment.getPatient().getUser().getEmail())
+                            .phoneNumber(appointment.getPatient().getUser().getPhone())
+                            .patientName(appointment.getPatient().getUser().getFullName())
+                            .patientNo(appointment.getPatient().getPatientNo())
+                            .departmentName(appointment.getDoctor().getDepartment().getName())
+                            .status(appointment.getStatus())
+                            .build();
+                    return dto;
+                }).toList();
+
+        return ResponseDTO.<List<DoctorAppointmentDTO>>builder()
+                .data(dtos)
+                .statusCode(HttpStatus.OK.value())
                 .build();
     }
 }
