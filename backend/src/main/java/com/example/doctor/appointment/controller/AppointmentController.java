@@ -48,8 +48,11 @@ public class AppointmentController {
 
     @GetMapping("/doctors/me/appointments")
     @PreAuthorize("hasAuthority('DOCTOR')")
-    public ResponseEntity<?> getDoctorAppointments() {
-        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor());
+    public ResponseEntity<?> getDoctorAppointments(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(pageNumber,pageSize));
     }
 
     @GetMapping("/doctors/me/appointments/today")

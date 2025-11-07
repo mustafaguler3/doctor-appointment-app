@@ -6,7 +6,9 @@ const AppointmentService = {
     getPatientAppointments: () => axiosClient.get("/patients/me/appointments"),
     cancelAppointment: (id) => axiosClient.put(`/patients/me/appointments/${id}`),
     getPatientAppointmentById: (id) => axiosClient.get("/patient/me/appointments/"+id),
-    getAppointmentsByDoctor: () => axiosClient.get("/doctors/me/appointments"),
+    
+    getAppointmentsByDoctor: (pageNumber,pageSize) => axiosClient.get(`/doctors/me/appointments?pageNumber=${pageNumber}&pageSize=${pageSize}`),
+
     getAppointmentDetailByDoctor: (id) => axiosClient.get("/doctors/me/appointments/"+id)
 }
 

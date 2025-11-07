@@ -10,6 +10,9 @@ import com.example.doctor.appointment.util.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -145,38 +149,39 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public ResponseDTO<List<DoctorAppointmentDTO>> getAppointmentsByDoctor() {
+    public ResponseDTO<Page<DoctorAppointmentDTO>> getAppointmentsByDoctor(
+            int pageNumber,int pageSize
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         Doctor doctor = doctorRepository.findById(userDetails.getUser().getDoctor().getId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found with id "+ userDetails.getUser().getDoctor().getId()));
+                .orElseThrow(() -> new RuntimeException("Doctor not found with id "+
+                        userDetails.getUser().getDoctor().getId()));
 
-        List<Appointment> appointments = doctor.getAppointments();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
 
-        List<DoctorAppointmentDTO> dtos =
-                appointments.stream().map(
-                        appointment -> {
-                            DoctorAppointmentDTO dto = DoctorAppointmentDTO
-                                    .builder()
-                                    .id(appointment.getId())
-                                    .notes(appointment.getNotes())
-                                    .appointmentDate(appointment.getAppointmentDate())
-                                    .appointmentTime(appointment.getAppointmentTime())
-                                    .gender(appointment.getPatient().getGender())
-                                    .bloodGroup(appointment.getPatient().getBloodGroup())
-                                    .patientEmail(appointment.getPatient().getUser().getEmail())
-                                    .phoneNumber(appointment.getPatient().getUser().getPhone())
-                                    .patientName(appointment.getPatient().getUser().getFullName())
-                                    .patientNo(appointment.getPatient().getPatientNo())
-                                    .departmentName(appointment.getDoctor().getDepartment().getName())
-                                    .status(appointment.getStatus())
-                                    .build();
-                            return dto;
-                        }
-                ).toList();
+        Page<Appointment> appointments =
+                appointmentRepository.findAppointmentsByDoctorId(doctor.getId(),pageable);
 
-        return ResponseDTO.<List<DoctorAppointmentDTO>>builder()
+        Page<DoctorAppointmentDTO> dtos =
+                appointments.map(appointment -> DoctorAppointmentDTO.builder()
+                        .id(appointment.getId())
+                        .notes(appointment.getNotes())
+                        .appointmentDate(appointment.getAppointmentDate())
+                        .appointmentTime(appointment.getAppointmentTime())
+                        .gender(appointment.getPatient().getGender())
+                        .bloodGroup(appointment.getPatient().getBloodGroup())
+                        .patientEmail(appointment.getPatient().getUser().getEmail())
+                        .phoneNumber(appointment.getPatient().getUser().getPhone())
+                        .patientName(appointment.getPatient().getUser().getFullName())
+                        .patientNo(appointment.getPatient().getPatientNo())
+                        .departmentName(appointment.getDoctor().getDepartment().getName())
+                        .status(appointment.getStatus())
+                        .build()
+                );
+
+        return ResponseDTO.<Page<DoctorAppointmentDTO>>builder()
                 .data(dtos)
                 .statusCode(HttpStatus.OK.value())
                 .message("Fetched all doctor appointments")
