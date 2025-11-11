@@ -90,14 +90,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public ResponseDTO<List<AppointmentDTO>> findPatientAppointments() {
+    public ResponseDTO<Page<AppointmentDTO>> findAppointmentsByPatient(int pageNumber,int pageSize,String sort) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        List<Appointment> appointments =
-                appointmentRepository.findAppointmentsByPatientId(userDetails.getUser().getPatient().getId());
+        String[] sortParams = sort.split(",");
+        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        List<AppointmentDTO> dtos = appointments.stream()
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(direction,sortParams[0]));
+
+        Page<Appointment> appointments =
+                appointmentRepository.findAppointmentsByPatientId(userDetails.getUser().getPatient().getId(),pageable);
+
+        Page<AppointmentDTO> dtos = appointments
                 .map(appointment -> {
                     AppointmentDTO dty = modelMapper.map(appointment,AppointmentDTO.class);
                     dty.setDepartmentName(
@@ -106,9 +112,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                     dty.setDoctorId(appointment.getDoctor() != null ? appointment.getDoctor().getId() : null);
                     dty.setFullName(appointment.getDoctor().getUser().getFullName());
                     return dty;
-                }).toList();
+                });
 
-        return ResponseDTO.<List<AppointmentDTO>>builder()
+        return ResponseDTO.<Page<AppointmentDTO>>builder()
                 .data(dtos)
                 .statusCode(HttpStatus.OK.value())
                 .build();

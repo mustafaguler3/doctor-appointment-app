@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AppointmentService {
     ResponseDTO<AppointmentDTO> createAppointment(AppointmentDTO request);
-    ResponseDTO<List<AppointmentDTO>> findPatientAppointments();
+    ResponseDTO<Page<AppointmentDTO>> findAppointmentsByPatient(int pageNumber,int pageSize,String sort);
     ResponseDTO<AppointmentDTO> getAppointment(Long appointmentId);
     ResponseDTO<String> cancelAppointment(Long appointmentId);
     ResponseDTO<Page<DoctorAppointmentDTO>> getAppointmentsByDoctor(int page,int pageSize,String sort);

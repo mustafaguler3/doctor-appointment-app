@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
-    List<Appointment> findAppointmentsByPatientId(Long patientId);
+    Page<Appointment> findAppointmentsByPatientId(Long patientId,Pageable pageable);
     boolean existsByPatientIdAndStatusIn(Long patientId, List<AppointmentStatus> statuses);
     Page<Appointment> findAppointmentsByDoctorId(Long doctorId, Pageable pageable);
     @Query("SELECT a FROM Appointment a where a.doctor.id = :doctorId AND a.appointmentDate = :today")
