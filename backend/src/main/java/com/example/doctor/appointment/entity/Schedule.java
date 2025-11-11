@@ -9,7 +9,12 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "schedules")
+@Table(
+        name = "schedules",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"doctor_id", "date"})
+        }
+)
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

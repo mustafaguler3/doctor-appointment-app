@@ -10,9 +10,12 @@ import com.example.doctor.appointment.repository.DoctorRepository;
 import com.example.doctor.appointment.repository.ScheduleRepository;
 import com.example.doctor.appointment.repository.TimeSlotRepository;
 import com.example.doctor.appointment.service.ScheduleService;
+import com.example.doctor.appointment.util.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,15 +34,28 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ResponseDTO<ScheduleDTO> createScheduleWithTimeSlots(ScheduleDTO dto) {
-        Doctor doctor = doctorRepository.findById(dto.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Doctor doctor = userDetails.getUser().getDoctor();
+        if (doctor == null) {
+            throw new RuntimeException("Doctor not found for the logged-in user.");
+        }
+
+        if (dto.getDate() == null || dto.getStartTime() == null || dto.getEndTime() == null) {
+            throw new IllegalArgumentException("Date, startTime, and endTime must not be null");
+        }
+
+        if (!dto.getStartTime().isBefore(dto.getEndTime())) {
+            throw new IllegalArgumentException("Start time must be before end time");
+        }
 
         Schedule schedule = new Schedule();
         schedule.setDoctor(doctor);
         schedule.setDate(dto.getDate());
         schedule.setStartTime(dto.getStartTime());
-        schedule.setMaxPatients(dto.getMaxPatients());
         schedule.setEndTime(dto.getEndTime());
+        schedule.setMaxPatients(dto.getMaxPatients());
         scheduleRepository.save(schedule);
 
         LocalTime time = dto.getStartTime();
@@ -52,12 +68,19 @@ public class ScheduleServiceImpl implements ScheduleService {
             time = time.plusMinutes(10);
         }
 
-        ScheduleDTO responseDto = modelMapper.map(schedule, ScheduleDTO.class);
+        ScheduleDTO responseDto = ScheduleDTO.builder()
+                .id(schedule.getId())
+                .date(schedule.getDate())
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .maxPatients(schedule.getMaxPatients())
+                .build();
+
 
         return ResponseDTO.<ScheduleDTO>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .data(responseDto)
-                .message("Schedule and timeslots created successfully")
+                .message("Schedule and time slots created successfully")
                 .build();
     }
     @Override

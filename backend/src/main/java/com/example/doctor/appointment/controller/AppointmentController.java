@@ -37,11 +37,10 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointment(appointmentId));
     }
 
-    @PatchMapping("/patients/me/appointments/{appointmentId}")
+    @PutMapping("/patients/me/appointments/{appointmentId}")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<?> cancelPatientAppointment(
-            @PathVariable Long appointmentId,
-            @RequestBody Map<String, String> updateRequest // ör: {"status": "CANCELLED"}
+            @PathVariable Long appointmentId
     ) {
         return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
     }
@@ -50,9 +49,10 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('DOCTOR')")
     public ResponseEntity<?> getDoctorAppointments(
             @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "5") int pageSize
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "appointmentDate,desc") String sort
     ) {
-        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(pageNumber,pageSize));
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(pageNumber,pageSize,sort));
     }
 
     @GetMapping("/doctors/me/appointments/today")

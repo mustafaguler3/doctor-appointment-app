@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -150,7 +151,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public ResponseDTO<Page<DoctorAppointmentDTO>> getAppointmentsByDoctor(
-            int pageNumber,int pageSize
+            int pageNumber,int pageSize,String sort
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -158,8 +159,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = doctorRepository.findById(userDetails.getUser().getDoctor().getId())
                 .orElseThrow(() -> new RuntimeException("Doctor not found with id "+
                         userDetails.getUser().getDoctor().getId()));
+        String[] sortParams = sort.split(",");
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortParams[0]));
 
         Page<Appointment> appointments =
                 appointmentRepository.findAppointmentsByDoctorId(doctor.getId(),pageable);

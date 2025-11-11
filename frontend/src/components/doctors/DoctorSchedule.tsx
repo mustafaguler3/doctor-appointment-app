@@ -71,7 +71,7 @@ export default function DoctorSchedule({ doctor }: DoctorScheduleProps) {
           overflowX: "auto",
         }}
       >
-        {doctor.schedules?.map((s: Schedule) => (
+        {doctor.schedules?.filter(s => new Date(s.date) >= new Date()).map((s: Schedule) => (
           <Button
             key={s.id}
             variant={selectedDate === s.date ? "contained" : "outlined"}

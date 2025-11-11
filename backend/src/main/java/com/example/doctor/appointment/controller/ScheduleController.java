@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -20,7 +22,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/new")
-    public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO dto) {
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    public ResponseEntity<?> createSchedule(@Valid @RequestBody ScheduleDTO dto) {
         return ResponseEntity.ok(scheduleService.createScheduleWithTimeSlots(dto));
     }
 

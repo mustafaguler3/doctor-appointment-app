@@ -6,7 +6,8 @@ const ScheduleService =  {
             doctorId,
             date
         }
-    }) 
+    }),
+    createSchedule: (data) => axiosClient.post("/schedules/new",data) 
 }
 
 export default ScheduleService;

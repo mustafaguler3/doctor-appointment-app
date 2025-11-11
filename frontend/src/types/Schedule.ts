@@ -14,5 +14,6 @@ export interface Schedule {
   date: string;
   startTime:string
   endTime:string
+  maxPatients: number
   timeSlots: TimeSlot[];
 }

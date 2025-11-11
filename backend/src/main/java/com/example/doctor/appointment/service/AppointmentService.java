@@ -15,7 +15,7 @@ public interface AppointmentService {
     ResponseDTO<List<AppointmentDTO>> findPatientAppointments();
     ResponseDTO<AppointmentDTO> getAppointment(Long appointmentId);
     ResponseDTO<String> cancelAppointment(Long appointmentId);
-    ResponseDTO<Page<DoctorAppointmentDTO>> getAppointmentsByDoctor(int page,int pageSize);
+    ResponseDTO<Page<DoctorAppointmentDTO>> getAppointmentsByDoctor(int page,int pageSize,String sort);
     ResponseDTO<DoctorAppointmentDTO> getAppointmentDetailByDoctor(Long appointmentId);
     ResponseDTO<List<DoctorAppointmentDTO>> getTodayAppointmentsByDoctor();
 }
