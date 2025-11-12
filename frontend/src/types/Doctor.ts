@@ -3,7 +3,7 @@ import type { Schedule } from "./Schedule"
 import type { User } from "./User"
 
 export interface Doctor {
-    id: number
+    id: any
     departmentId: number
     doctorNo: string
     department: Department
@@ -17,7 +17,6 @@ export interface Doctor {
     fee: string
     signature: string
     status: unknown
-
     schedules: Schedule[]
     country: string
     specialization: string[]

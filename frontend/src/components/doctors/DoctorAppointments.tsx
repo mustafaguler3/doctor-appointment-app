@@ -44,7 +44,6 @@ const DoctorAppointments = () => {
         setLoading(false);
       }
     };
-
     fetchDoctorAppointments();
   }, [page, size, sortOption]);
 

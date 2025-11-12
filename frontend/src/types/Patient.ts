@@ -1,7 +1,7 @@
 import type { User } from "./User";
 
 export interface Patient {
-    id: number
+    id: any
     user: User
     patientNo: string
     insuranceNumber: string

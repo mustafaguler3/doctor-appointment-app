@@ -8,6 +8,79 @@ const DoctorAppointmentDetail = () => {
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams();
 
+  const [formData, setFormData] = useState({
+    appointmentId: "",
+    weight: "",
+    height: "",
+    tempeture: "",
+    pulse: "",
+    respiration: "",
+    bloodPressure: "",
+    problemDescription: "",
+    tests: "",
+    advice: "",
+    habit: [""],
+    prescription: {
+      doctor: { id:  "" },
+      patient: { id:  "" },
+      advice: "",
+      symptoms: [""],
+      diagnosis: [""],
+      medicines: [
+        {
+          sNo: "",
+          name: "",
+          dosage: "",
+          medicineType: "",
+          takenTime: "",
+          schedule: "",
+          totalDays: "",
+          instructions: "",
+        },
+      ],
+    },
+  });
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleMultiSelectChange = (e, keyPath) => {
+    const selectedValues = Array.from(
+      e.target.selectedOptions,
+      (opt) => (opt as HTMLOptionElement).value
+    );
+
+    if (keyPath.startsWith("prescription.")) {
+      const field = keyPath.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        prescription: {
+          ...prev.prescription,
+          [field]: selectedValues,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [keyPath]: selectedValues,
+      }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      setFormData({ ...formData, appointmentId: doctorAppointment.id
+      });
+      console.log(formData);
+      console.log("Submitting treatment data...",doctorAppointment.id);
+    } catch (err) {
+      console.log("Error: ", err?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     const fetchDoctorAppointment = async () => {
       try {
@@ -16,6 +89,15 @@ const DoctorAppointmentDetail = () => {
         );
         if (response.data.statusCode === 200) {
           setDoctorAppointment(response.data.data);
+          setFormData((prev) => ({
+            ...prev,
+            appointmentId: response.data.data.id,
+            prescription: {
+              ...prev.prescription,
+              doctor: { id: response.data.data.doctorId },
+              patient: { id: response.data.data.patientId },
+            },
+          }));
         } else {
           setError(
             response.data.message || "Unable to fetch appointment details"
@@ -40,6 +122,25 @@ const DoctorAppointmentDetail = () => {
     );
   }
 
+  const handleMedicineChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updated = [...prev.prescription.medicines];
+      updated[index][name] = value;
+      return {
+        ...prev,
+        prescription: {
+          ...prev.prescription,
+          medicines: updated,
+        },
+      };
+    });
+  };
+
+  const addMedicine = (medicine) => {
+    return medicine;
+  };
+
   return (
     <motion.section
       className="container mx-auto py-10 px-6"
@@ -47,14 +148,11 @@ const DoctorAppointmentDetail = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Başlık */}
       <h2 className="text-3xl font-bold text-blue-700 mb-10 text-center">
         Appointment Detail
       </h2>
 
-      {/* Üst Bilgiler */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Patient Info */}
         <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition">
           <h3 className="text-xl font-semibold text-blue-600 mb-4 flex items-center gap-2">
             🧍 Patient Information
@@ -103,19 +201,112 @@ const DoctorAppointmentDetail = () => {
           🧾 Complete Treatment
         </h3>
 
-        <form className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Vitals */}
           <div className="grid md:grid-cols-3 gap-4">
-            <Input placeholder="Height (cm)" />
-            <Input placeholder="Weight (kg)" />
-            <Input placeholder="Temperature (°C)" />
-            <Input placeholder="Pulse (per min)" />
-            <Input placeholder="Respiration (per min)" />
-            <Input placeholder="Blood Pressure" />
+            <Input
+              onChange={handleOnChange}
+              name="height"
+              placeholder="Height (cm)"
+              value={formData.height}
+            />
+            <Input
+              onChange={handleOnChange}
+              name="weight"
+              placeholder="Weight (kg)"
+              value={formData.weight}
+            />
+            <Input
+              onChange={handleOnChange}
+              name="tempeture"
+              placeholder="Temperature (°C)"
+              value={formData.tempeture}
+            />
+            <Input
+              onChange={handleOnChange}
+              name="pulse"
+              placeholder="Pulse (per min)"
+              value={formData.pulse}
+            />
+            <Input
+              onChange={handleOnChange}
+              name="respiration"
+              placeholder="Respiration (per min)"
+              value={formData.respiration}
+            />
+            <Input
+              onChange={handleOnChange}
+              name="bloodPressure"
+              placeholder="Blood Pressure"
+              value={formData.bloodPressure}
+            />
+
+            {/* Habit */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Habit
+              </label>
+              <select
+                multiple
+                name="habit"
+                value={formData.habit}
+                onChange={(e) => handleMultiSelectChange(e, "habit")}
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="Smoker">Smoker</option>
+                <option value="Non-Smoker">Non-Smoker</option>
+                <option value="Drinker">Drinker</option>
+                <option value="Non-Drinker">Non-Drinker</option>
+              </select>
+            </div>
+
+            {/* Symptoms */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Symptoms
+              </label>
+              <select
+                multiple
+                name="symptoms"
+                value={formData.prescription.symptoms}
+                onChange={(e) =>
+                  handleMultiSelectChange(e, "prescription.symptoms")
+                }
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="Fever">Fever</option>
+                <option value="Cough">Cough</option>
+                <option value="Headache">Headache</option>
+                <option value="Body Pain">Body Pain</option>
+              </select>
+            </div>
+
+            {/* Diagnosis */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Diagnosis
+              </label>
+              <select
+                multiple
+                name="diagnosis"
+                value={formData.prescription.diagnosis}
+                onChange={(e) =>
+                  handleMultiSelectChange(e, "prescription.diagnosis")
+                }
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="Common Cold">Common Cold</option>
+                <option value="Flu">Flu</option>
+                <option value="Migraine">Migraine</option>
+              </select>
+            </div>
           </div>
 
           {/* Problem */}
           <textarea
+            name="problemDescription"
+            value={formData.problemDescription}
+            onChange={handleOnChange}
             placeholder="Problem Description (optional)"
             className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
             rows={3}
@@ -123,28 +314,60 @@ const DoctorAppointmentDetail = () => {
 
           {/* Prescriptions */}
           <div>
-            <h4 className="text-lg font-semibold text-blue-600 mb-3">
-              💊 Prescriptions
-            </h4>
-            <div className="grid md:grid-cols-5 gap-3">
-              <Select options={["Tab", "Capsule", "Injection", "Ointment"]} />
-              <Select options={["Paracetamol", "Ibuprofen", "Amoxicillin"]} />
-              <Select options={["1-1-1", "1-0-1", "0-1-1"]} />
-              <Input type="number" min="1" max="365" placeholder="Days" />
-              <Select options={["After Meal", "Before Meal", "Anytime"]} />
+            <div>
+              <h4 className="text-lg font-semibold text-blue-600 mb-3">
+                💊 Medicines
+              </h4>
+              {formData.prescription.medicines.map((med, index) => (
+                <div key={index} className="grid md:grid-cols-4 gap-3 mb-3">
+                  <Input
+                    name="name"
+                    value={med.name}
+                    onChange={(e) => handleMedicineChange(index, e)}
+                    placeholder="Medicine Name"
+                  />
+                  <Input
+                    name="dosage"
+                    value={med.dosage}
+                    onChange={(e) => handleMedicineChange(index, e)}
+                    placeholder="Dosage"
+                  />
+                  <Input
+                    name="schedule"
+                    value={med.schedule}
+                    onChange={(e) => handleMedicineChange(index, e)}
+                    placeholder="Schedule"
+                  />
+                  <Input
+                    name="totalDays"
+                    value={med.totalDays}
+                    onChange={(e) => handleMedicineChange(index, e)}
+                    placeholder="Days"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addMedicine}
+                className="text-blue-600 text-sm font-medium hover:underline"
+              >
+                + Add another medicine
+              </button>
             </div>
-            <button
-              type="button"
-              className="mt-3 text-sm text-blue-600 font-medium hover:underline"
-            >
-              + Add another medicine
-            </button>
           </div>
 
           {/* Test & Advice */}
           <div className="grid md:grid-cols-2 gap-4">
-            <Textarea placeholder="Test (if any)" />
-            <Textarea placeholder="Advice" />
+            <Textarea
+              name="tests"
+              onChange={handleOnChange}
+              placeholder="Test (if any)"
+            />
+            <Textarea
+              name="advice"
+              onChange={handleOnChange}
+              placeholder="Advice"
+            />
           </div>
 
           {/* Submit */}
@@ -174,19 +397,12 @@ const Input = (props) => (
   />
 );
 
-const Textarea = ({ placeholder }) => (
+const Textarea = (props) => (
   <textarea
-    placeholder={placeholder}
+    {...props}
     className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
     rows={3}
   ></textarea>
 );
 
-const Select = ({ options }) => (
-  <select className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">
-    {options.map((opt) => (
-      <option key={opt}>{opt}</option>
-    ))}
-  </select>
-);
 export default DoctorAppointmentDetail;
