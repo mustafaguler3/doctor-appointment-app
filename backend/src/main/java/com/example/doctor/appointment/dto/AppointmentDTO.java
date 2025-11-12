@@ -16,6 +16,8 @@ public class AppointmentDTO {
     private AppointmentStatus status;
     private String notes;
     private Long doctorId;
+    @JsonBackReference("ap")
+    private TreatmentDTO treatment;
     private String fullName;
     private String departmentName;
     @JsonBackReference("a")
@@ -25,4 +27,6 @@ public class AppointmentDTO {
     private Long timeSlotId;
     private Long scheduleId;
     private LocalDateTime createdAt;
+    @JsonBackReference("app-pres")
+    private PrescriptionDTO prescription;
 }

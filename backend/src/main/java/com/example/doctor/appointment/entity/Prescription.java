@@ -1,5 +1,7 @@
 package com.example.doctor.appointment.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +32,10 @@ public class Prescription {
     @JoinColumn(name = "appointment_id", nullable = false, unique = true)
     private Appointment appointment;
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medicine> medicines = new ArrayList<>();
+    private List<Medicine> medicines;
+    @ManyToOne
+    @JoinColumn(name = "treatment_id")
+    private Treatment treatment;
     @Column(length = 1000)
     private String advice;
     @ElementCollection

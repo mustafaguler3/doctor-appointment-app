@@ -11,11 +11,15 @@ const DoctorAppointmentDetail = () => {
   useEffect(() => {
     const fetchDoctorAppointment = async () => {
       try {
-        const response = await AppointmentService.getAppointmentDetailByDoctor(id);
+        const response = await AppointmentService.getAppointmentDetailByDoctor(
+          id
+        );
         if (response.data.statusCode === 200) {
           setDoctorAppointment(response.data.data);
         } else {
-          setError(response.data.message || "Unable to fetch appointment details");
+          setError(
+            response.data.message || "Unable to fetch appointment details"
+          );
         }
       } catch (err: any) {
         setError(err?.response?.data?.message || "An error occurred");
@@ -29,54 +33,61 @@ const DoctorAppointmentDetail = () => {
   }
 
   if (!doctorAppointment) {
-    return <p className="text-gray-500 text-center mt-10">Loading appointment details...</p>;
+    return (
+      <p className="text-gray-500 text-center mt-10">
+        Loading appointment details...
+      </p>
+    );
   }
 
   return (
     <motion.section
       className="container mx-auto py-10 px-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      <h2 className="text-3xl font-bold text-blue-700 mb-8 text-center">
+      {/* Başlık */}
+      <h2 className="text-3xl font-bold text-blue-700 mb-10 text-center">
         Appointment Detail
       </h2>
 
+      {/* Üst Bilgiler */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Patient Info */}
-        <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100">
-          <h3 className="text-xl font-semibold text-blue-600 mb-4">
+        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition">
+          <h3 className="text-xl font-semibold text-blue-600 mb-4 flex items-center gap-2">
             🧍 Patient Information
           </h3>
           <div className="space-y-2 text-gray-700">
-            <p><strong>Name:</strong> {doctorAppointment.patientName}</p>
-            <p><strong>Phone:</strong> {doctorAppointment.phoneNumber ?? "—"}</p>
-            <p><strong>Email:</strong> {doctorAppointment.patientEmail ?? "—"}</p>
-            <p><strong>Gender:</strong> {doctorAppointment.gender ?? "—"}</p>
-            <p><strong>Age:</strong> {doctorAppointment.age ?? "—"}</p>
-            <p><strong>Blood Group:</strong> {doctorAppointment.bloodGroup ?? "—"}</p>
+            <Info label="Name" value={doctorAppointment.patientName} />
+            <Info label="Phone" value={doctorAppointment.phoneNumber} />
+            <Info label="Email" value={doctorAppointment.patientEmail} />
+            <Info label="Gender" value={doctorAppointment.gender} />
+            <Info label="Age" value={doctorAppointment.age} />
+            <Info label="Blood Group" value={doctorAppointment.bloodGroup} />
           </div>
         </div>
 
         {/* Appointment Info */}
-        <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100">
-          <h3 className="text-xl font-semibold text-blue-600 mb-4">
+        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition">
+          <h3 className="text-xl font-semibold text-blue-600 mb-4 flex items-center gap-2">
             🩺 Appointment Information
           </h3>
           <div className="space-y-2 text-gray-700">
-            <p><strong>Department:</strong> {doctorAppointment.departmentName}</p>
-            <p><strong>Date:</strong> {doctorAppointment.appointmentDate}</p>
-            <p><strong>Time:</strong> {doctorAppointment.appointmentTime}</p>
-            <p><strong>Notes:</strong> {doctorAppointment.notes || "—"}</p>
+            <Info label="Department" value={doctorAppointment.departmentName} />
+            <Info label="Date" value={doctorAppointment.appointmentDate} />
+            <Info label="Time" value={doctorAppointment.appointmentTime} />
+            <Info label="Notes" value={doctorAppointment.notes || "—"} />
             <p>
               <strong>Status:</strong>{" "}
               <span
                 className={`px-3 py-1 rounded-full text-sm font-semibold ${
                   doctorAppointment.status === "COMPLETED"
-                    ? "bg-green-100" 
+                    ? "bg-green-100 text-green-700"
                     : doctorAppointment.status === "PENDING"
                     ? "bg-blue-600 text-white"
-                    : "bg-yellow-100 text-yellow-600"
+                    : "bg-yellow-100 text-yellow-700"
                 }`}
               >
                 {doctorAppointment.status}
@@ -87,71 +98,60 @@ const DoctorAppointmentDetail = () => {
       </div>
 
       {/* Treatment Form */}
-      <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100 mt-10">
-        <h3 className="text-xl font-semibold text-blue-600 mb-6">
+      <div className="bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-10">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-6 flex items-center gap-2">
           🧾 Complete Treatment
         </h3>
 
-        <form className="space-y-6">
+        <form className="space-y-8">
+          {/* Vitals */}
           <div className="grid md:grid-cols-3 gap-4">
-            <input type="text" placeholder="Height (cm)" className="input" />
-            <input type="text" placeholder="Weight (kg)" className="input" />
-            <input type="text" placeholder="Temperature (°C)" className="input" />
-            <input type="text" placeholder="Pulse (per min)" className="input" />
-            <input type="text" placeholder="Respiration (per min)" className="input" />
-            <input type="text" placeholder="Blood Pressure" className="input" />
+            <Input placeholder="Height (cm)" />
+            <Input placeholder="Weight (kg)" />
+            <Input placeholder="Temperature (°C)" />
+            <Input placeholder="Pulse (per min)" />
+            <Input placeholder="Respiration (per min)" />
+            <Input placeholder="Blood Pressure" />
           </div>
 
+          {/* Problem */}
           <textarea
             placeholder="Problem Description (optional)"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+            rows={3}
           ></textarea>
 
+          {/* Prescriptions */}
           <div>
-            <h4 className="text-lg font-semibold text-blue-600 mb-2">💊 Prescriptions</h4>
+            <h4 className="text-lg font-semibold text-blue-600 mb-3">
+              💊 Prescriptions
+            </h4>
             <div className="grid md:grid-cols-5 gap-3">
-              <select className="input">
-                <option>Tab</option>
-                <option>Capsule</option>
-                <option>Injection</option>
-                <option>Ointment</option>
-              </select>
-              <select className="input">
-                <option>Paracetamol</option>
-                <option>Ibuprofen</option>
-                <option>Amoxicillin</option>
-              </select>
-              <select className="input">
-                <option>1-1-1</option>
-                <option>1-0-1</option>
-                <option>0-1-1</option>
-              </select>
-              <input type="number" min="1" max="365" placeholder="Days" className="input" />
-              <select className="input">
-                <option>After Meal</option>
-                <option>Before Meal</option>
-              </select>
+              <Select options={["Tab", "Capsule", "Injection", "Ointment"]} />
+              <Select options={["Paracetamol", "Ibuprofen", "Amoxicillin"]} />
+              <Select options={["1-1-1", "1-0-1", "0-1-1"]} />
+              <Input type="number" min="1" max="365" placeholder="Days" />
+              <Select options={["After Meal", "Before Meal", "Anytime"]} />
             </div>
-            <button type="button" className="mt-3 text-sm text-blue-600 font-medium hover:underline">
+            <button
+              type="button"
+              className="mt-3 text-sm text-blue-600 font-medium hover:underline"
+            >
               + Add another medicine
             </button>
           </div>
 
+          {/* Test & Advice */}
           <div className="grid md:grid-cols-2 gap-4">
-            <textarea
-              placeholder="Test (if any)"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-            ></textarea>
-            <textarea
-              placeholder="Advice"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
-            ></textarea>
+            <Textarea placeholder="Test (if any)" />
+            <Textarea placeholder="Advice" />
           </div>
 
+          {/* Submit */}
           <div className="text-right">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium"
             >
               Complete Treatment
             </button>
@@ -161,5 +161,32 @@ const DoctorAppointmentDetail = () => {
     </motion.section>
   );
 };
+const Info = ({ label, value }) => (
+  <p>
+    <strong>{label}:</strong> {value ?? "—"}
+  </p>
+);
 
+const Input = (props) => (
+  <input
+    {...props}
+    className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+  />
+);
+
+const Textarea = ({ placeholder }) => (
+  <textarea
+    placeholder={placeholder}
+    className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+    rows={3}
+  ></textarea>
+);
+
+const Select = ({ options }) => (
+  <select className="border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full">
+    {options.map((opt) => (
+      <option key={opt}>{opt}</option>
+    ))}
+  </select>
+);
 export default DoctorAppointmentDetail;

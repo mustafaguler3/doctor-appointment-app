@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,7 +54,26 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Invalid definition: " + ex.getPathReference());
     }
+    @ExceptionHandler(JpaSystemException.class)
+    public ResponseEntity<Map<String, Object>> handleJpaSystemException(JpaSystemException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("statusCode", 500);
+        body.put("message", ex.getMessage());
 
+        StackTraceElement[] stackTrace = ex.getStackTrace();
+        if (stackTrace.length > 0) {
+            StackTraceElement origin = stackTrace[0];
+            body.put("class", origin.getClassName());
+            body.put("method", origin.getMethodName());
+            body.put("line", origin.getLineNumber());
+        }
+
+        for (StackTraceElement element : ex.getStackTrace()) {
+            System.out.println(element.toString());
+        }
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex) {
         Map<String, Object> body = new LinkedHashMap<>();

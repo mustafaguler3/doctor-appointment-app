@@ -240,8 +240,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppointmentNotFound("No any appointments in Today");
         }
 
-        System.out.println("AAAA : {}"+appointments);
-
         List<DoctorAppointmentDTO> dtos = appointments
                 .stream()
                 .map(appointment -> {

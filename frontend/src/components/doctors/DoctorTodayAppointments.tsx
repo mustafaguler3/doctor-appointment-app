@@ -139,7 +139,7 @@ const DoctorTodayAppointments = () => {
                       </td>
                       <td className="px-4 py-3 text-sm text-center">
                         <a
-                          href="doctor-treatment"
+                          href={`/doctor/appointment-all/${today.id}`}
                           className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md text-sm"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

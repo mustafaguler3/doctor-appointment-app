@@ -3,6 +3,7 @@ package com.example.doctor.appointment.entity;
 import com.example.doctor.appointment.enums.AppointmentStatus;
 import com.example.doctor.appointment.enums.PaymentMethod;
 import com.example.doctor.appointment.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
     @ManyToOne
@@ -52,6 +53,8 @@ public class Appointment {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
 
+    @OneToOne(mappedBy = "appointment",fetch = FetchType.LAZY)
+    private Treatment treatment;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -61,7 +64,7 @@ public class Appointment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "appointment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appointment",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Prescription> prescriptions;
 
     @PrePersist
