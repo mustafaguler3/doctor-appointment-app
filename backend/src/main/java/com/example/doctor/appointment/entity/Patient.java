@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "patients")
@@ -30,6 +31,9 @@ public class Patient {
     private String gender;
     private String state;
     private String zip;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
 
     @OneToOne(mappedBy = "patient")
     private Prescription prescription;

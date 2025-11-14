@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,18 @@ public class PatientServiceImpl implements PatientService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final FileStorageService fileStorageService;
+
+    @Override
+    public ResponseDTO<PatientDTO> getPatientById(Long id) {
+        Patient patient = patientRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Patient not found")
+        );
+        PatientDTO dto = modelMapper.map(patient,PatientDTO.class);
+        return ResponseDTO.<PatientDTO>builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(dto)
+                .build();
+    }
 
     @Override
     public ResponseDTO<?> update(Principal principal, PatientDTO patientDTO) throws IOException {
@@ -64,6 +77,21 @@ public class PatientServiceImpl implements PatientService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Updated successfully")
                 .data(dto)
+                .build();
+    }
+
+    @Override
+    public ResponseDTO<List<PatientDTO>> findAllPatients() {
+        List<Patient> patients = patientRepository.findAll();
+        if (patients.isEmpty()) {
+            throw new RuntimeException("Patients not found");
+        }
+        List<PatientDTO> dtos = patients.stream().map(
+                patient -> modelMapper.map(patient,PatientDTO.class)
+        ).toList();
+        return ResponseDTO.<List<PatientDTO>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(dtos)
                 .build();
     }
 }

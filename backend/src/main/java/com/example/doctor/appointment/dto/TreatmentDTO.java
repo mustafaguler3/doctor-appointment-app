@@ -5,13 +5,17 @@ import com.example.doctor.appointment.entity.Patient;
 import com.example.doctor.appointment.entity.Prescription;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TreatmentDTO {
     private Long id;
     private String height;

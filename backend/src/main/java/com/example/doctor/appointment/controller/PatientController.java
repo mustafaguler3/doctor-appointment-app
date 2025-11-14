@@ -18,6 +18,15 @@ public class PatientController {
 
     private final PatientService patientService;
 
+    @GetMapping("/{patientId}")
+    public ResponseEntity<?> findPatientById(@PathVariable("patientId") Long patientId){
+        return ResponseEntity.ok(patientService.getPatientById(patientId));
+    }
+    @GetMapping
+    public ResponseEntity<?> findAllPatients(){
+        return ResponseEntity.ok(patientService.findAllPatients());
+    }
+
     @PostMapping("/update")
     public ResponseEntity<?> update(Principal principal,
                                     @Valid @ModelAttribute PatientDTO patientDTO) throws IOException {

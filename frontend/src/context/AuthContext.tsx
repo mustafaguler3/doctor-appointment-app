@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
             role: decoded.role,
             status: decoded.status,
             imageUrl: decoded.imageUrl,
+            patientId: decoded.patientId
           });
         } catch (error) {
           console.error("Invalid token:", error);

@@ -1,3 +1,4 @@
+import type { Appointment } from "./Appointment";
 import type { User } from "./User";
 
 export interface Patient {
@@ -11,4 +12,5 @@ export interface Patient {
     zip: string
     city: string
     address: string
+    appointments: Appointment[]
 }

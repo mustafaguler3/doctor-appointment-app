@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private Long id;
+    private Long patientId;
     @Size(max = 50, message = "Username cannot exceed 50 characters")
     private String username;
     @NotBlank(message = "Full name is required")

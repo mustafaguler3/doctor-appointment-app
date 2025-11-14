@@ -1,5 +1,6 @@
 package com.example.doctor.appointment.service.impl;
 
+import com.example.doctor.appointment.enums.Role;
 import com.example.doctor.appointment.service.JwtService;
 import com.example.doctor.appointment.util.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
@@ -58,6 +59,9 @@ public class JwtServiceImpl implements JwtService {
         claims.put("email",userDetails.getUsername());
         claims.put("fullName",userDetails.getUser().getFullName());
         claims.put("imageUrl",userDetails.getUser().getImageUrl());
+        claims.put("patientId",userDetails.getUser().getRole() == Role.PATIENT ?
+                userDetails.getUser().getPatient().getId()
+                : null);
 
         return buildToken(claims,userDetails.getUsername());
     }

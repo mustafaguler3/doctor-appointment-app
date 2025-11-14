@@ -13,4 +13,5 @@ export interface User {
     status: boolean
     patient: Patient
     doctor: Doctor
+    patientId: number
 }

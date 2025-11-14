@@ -3,21 +3,29 @@ package com.example.doctor.appointment.dto;
 import com.example.doctor.appointment.entity.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PatientDTO {
 
     private Long id;
     @NotNull(message = "User cannot be null")
     @Valid
     private UserDTO user;
+    private List<AppointmentDTO> appointments;
     @NotBlank(message = "Address cannot be empty")
     private String address;
     @NotBlank(message = "City cannot be empty")
