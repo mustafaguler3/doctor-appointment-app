@@ -21,6 +21,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
+        working-directory: ./backend
         run: mvn clean package -DskipTests
 
       - name: Build Docker image
