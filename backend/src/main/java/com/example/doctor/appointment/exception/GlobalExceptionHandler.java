@@ -2,6 +2,7 @@ package com.example.doctor.appointment.exception;
 
 import com.example.doctor.appointment.dto.ResponseDTO;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
