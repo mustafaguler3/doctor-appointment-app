@@ -24,6 +24,7 @@ com/example/doctor/appointment/dto/response/AuthResponse.class
 com/example/doctor/appointment/dto/ScheduleResponseDTO.class
 com/example/doctor/appointment/service/AppointmentService.class
 com/example/doctor/appointment/util/JwtAuthenticationFilter.class
+com/example/doctor/appointment/dto/PatientDTO$PatientDTOBuilder.class
 com/example/doctor/appointment/entity/Doctor.class
 com/example/doctor/appointment/exception/AppointmentNotFound.class
 com/example/doctor/appointment/entity/ContactMessage.class
