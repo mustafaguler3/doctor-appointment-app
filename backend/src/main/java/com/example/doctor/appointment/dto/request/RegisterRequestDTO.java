@@ -3,7 +3,7 @@ package com.example.doctor.appointment.dto.request;
 import com.example.doctor.appointment.enums.Role;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Data
 public class RegisterRequestDTO {
