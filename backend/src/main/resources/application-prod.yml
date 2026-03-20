@@ -1,9 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-xxxx:5432/hospital_db_3all
+    url: jdbc:postgresql://dpg-d6u52cggjchc73cqggeg-a:5432/hospital_db_3all
     username: hospital_db_3all_user
     password: qQDNNE4FxxWIuMrtyBEhejvnGM6zJ7v7
-    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
