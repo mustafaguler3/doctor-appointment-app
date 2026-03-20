@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: mustafaguler4/doctor-backend
+    image: mustafaguler4/doctor-app-backend
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_db
