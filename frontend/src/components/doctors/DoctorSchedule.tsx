@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import type { Schedule, TimeSlot } from "../../types/Schedule";
 import type { Doctor } from "../../types/Doctor";
